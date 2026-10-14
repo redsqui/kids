@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2ec4b6">
+<title>Матемагия: путешествие в страну чисел</title>
+<style>
+:root{
+  --teal:#22b8a9; --teal-d:#138b80; --teal-l:#d6f6f1;
+  --sky:#4aa8f0; --sky-d:#2a83cc; --sky-l:#dcefff;
+  --lav:#9b7cf6; --lav-d:#7458e0; --lav-l:#efe9ff;
+  --coral:#ff7b6b; --coral-d:#e85a4a; --coral-l:#ffe7e2;
+  --sun:#ffc23d; --sun-d:#c98a00; --sun-l:#fff3cf;
+  --ink:#243150; --ink2:#55617e; --muted:#7d88a5;
+  --card:#ffffff; --line:#e1e7f3; --bg2:#f6f9ff;
+  --radius:24px; --radius-s:16px;
+  --shadow:0 12px 32px rgba(52,72,130,.13);
+  --shadow-s:0 4px 14px rgba(52,72,130,.10);
+  --focus:0 0 0 4px rgba(74,168,240,.55);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; min-height:100vh; color:var(--ink);
+  font-family:"Trebuchet MS","Segoe UI Rounded","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255,255,255,.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 78% 8%, rgba(255,255,255,.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 92% 62%, rgba(255,255,255,.8) 0 2px, transparent 3px),
+    radial-gradient(circle at 30% 85%, rgba(255,255,255,.8) 0 2px, transparent 3px),
+    linear-gradient(165deg,#e2fbf6 0%,#e5f1ff 38%,#efe8ff 72%,#fff3e4 100%);
+  background-attachment:fixed;
+}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:none;box-shadow:var(--focus)}
+h1,h2,h3{margin:0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[hidden]{display:none!important}
+
+/* ---------- Шапка ---------- */
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px max(14px,env(safe-area-inset-left));background:rgba(255,255,255,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(225,231,243,.9)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;padding:6px 8px;border-radius:14px}
+.brand .logo{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:20px;
+  background:linear-gradient(135deg,var(--teal),var(--lav));color:#fff;box-shadow:0 4px 10px rgba(155,124,246,.35)}
+.brand small{display:block;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.3px}
+.top-right{display:flex;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:#fff;box-shadow:var(--shadow-s);font-weight:800}
+.chip.crystal{background:linear-gradient(135deg,#f3fbff,#efe9ff)}
+.chip.crystal b{font-size:18px}
+.icon-btn{width:46px;height:46px;border-radius:14px;background:#fff;box-shadow:var(--shadow-s);font-size:20px;display:grid;place-items:center}
+.icon-btn[aria-pressed="false"]{opacity:.6}
+
+main{max-width:1140px;margin:0 auto;padding:18px 16px 70px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(255,194,61,.0)}50%{box-shadow:0 0 0 10px rgba(255,194,61,.25)}}
+
+/* ---------- Кнопки ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:12px 22px;border-radius:18px;
+  font-weight:800;font-size:17px;line-height:1.15;transition:transform .12s ease,filter .2s,box-shadow .2s;user-select:none;text-align:center}
+.btn:active:not([disabled]){transform:translateY(2px) scale(.99)}
+.btn:hover:not([disabled]){filter:brightness(1.04)}
+.btn[disabled]{opacity:.45;cursor:default}
+.btn-primary{background:linear-gradient(135deg,#2ec4b6,#22a5d0);color:#fff;box-shadow:0 6px 0 #178c95,0 10px 20px rgba(34,165,208,.25)}
+.btn-coral{background:linear-gradient(135deg,#ff8f6b,#ff6b86);color:#fff;box-shadow:0 6px 0 #d4566b,0 10px 20px rgba(255,107,134,.25)}
+.btn-sun{background:linear-gradient(135deg,#ffd55e,#ffb238);color:#523600;box-shadow:0 6px 0 #d18f17,0 10px 20px rgba(255,178,56,.25)}
+.btn-lav{background:linear-gradient(135deg,#ad92ff,#7f68f0);color:#fff;box-shadow:0 6px 0 #6047c9,0 10px 20px rgba(127,104,240,.25)}
+.btn-soft{background:#fff;color:var(--ink);box-shadow:0 4px 0 #dfe5f2,var(--shadow-s)}
+.btn-ghost{background:transparent;color:var(--ink2);min-height:44px;padding:8px 14px}
+.btn-sm{min-height:42px;padding:8px 14px;font-size:15px;border-radius:14px}
+.btn-lg{min-height:62px;font-size:20px;padding:14px 26px;border-radius:22px}
+.btn-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+.section-title{font-size:22px;font-weight:800;margin:28px 4px 14px;display:flex;align-items:center;gap:10px}
+.muted{color:var(--muted)}
+
+/* ---------- Лисёнок ---------- */
+.fox-wrap{display:flex;align-items:flex-end;gap:12px}
+.fox{width:100px;height:100px;flex:none;filter:drop-shadow(0 8px 10px rgba(255,122,61,.25))}
+.fox.lg{width:150px;height:150px}
+.fox.sm{width:72px;height:72px}
+.fox .fox-star{transform-origin:60px 17px;animation:wiggle 3s ease-in-out infinite}
+.fox .fox-tail{transform-origin:80px 88px;animation:wiggle 2.6s ease-in-out infinite}
+.fox.happy{animation:bounce .6s ease 2}
+.fox.think{animation:wiggle 1.2s ease 1}
+.bubble{position:relative;background:#fff;border-radius:20px;padding:14px 16px;box-shadow:var(--shadow-s);font-weight:700;font-size:16px;line-height:1.4;max-width:420px;min-height:52px}
+.bubble::before{content:"";position:absolute;left:-9px;bottom:18px;border:10px solid transparent;border-right-color:#fff;border-left:0}
+.bubble .who{display:block;font-size:12px;color:var(--coral-d);font-weight:800;margin-bottom:2px;letter-spacing:.3px}
+.bubble.fresh{animation:pop .35s ease}
+
+/* ---------- Главный экран ---------- */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;padding:26px;
+  background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(255,255,255,.8));position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(155,124,246,.25),transparent 70%)}
+.hero h1{font-size:clamp(30px,5vw,46px);line-height:1.05;letter-spacing:-.5px;
+  background:linear-gradient(90deg,#14a99b,#4aa8f0 45%,#9b7cf6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{font-size:clamp(16px,2.4vw,20px);font-weight:700;color:var(--ink2);margin:6px 0 14px}
+.hero .btn-row{margin-top:16px}
+.hero-fox{display:flex;flex-direction:column;align-items:center}
+.hero-fox .fox{animation:floaty 4s ease-in-out infinite}
+
+.map{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:100/52;min-height:330px;
+  background:
+   radial-gradient(ellipse at 20% 80%, rgba(46,196,182,.35), transparent 45%),
+   radial-gradient(ellipse at 80% 20%, rgba(155,124,246,.35), transparent 45%),
+   radial-gradient(ellipse at 55% 55%, rgba(255,194,61,.22), transparent 40%),
+   linear-gradient(160deg,#bdeee8,#cfe6ff 50%,#e2d8ff)}
+.map svg.map-path{position:absolute;inset:0;width:100%;height:100%}
+.island{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:6px;width:150px;text-align:center}
+.island .disc{width:86px;height:86px;border-radius:50%;display:grid;place-items:center;font-size:40px;background:#fff;
+  box-shadow:0 8px 0 rgba(0,0,0,.08),0 14px 24px rgba(52,72,130,.2);transition:transform .2s}
+.island:hover .disc,.island:focus-visible .disc{transform:translateY(-4px) scale(1.05)}
+.island .nm{font-weight:800;font-size:15px;background:rgba(255,255,255,.92);padding:4px 10px;border-radius:12px;box-shadow:var(--shadow-s)}
+.island .md{font-size:12px;font-weight:700;color:var(--ink2);background:rgba(255,255,255,.75);padding:2px 8px;border-radius:10px}
+.island.c1 .disc{background:linear-gradient(135deg,#d7fbe9,#fff)}
+.island.c2 .disc{background:linear-gradient(135deg,#dcefff,#fff)}
+.island.c3 .disc{background:linear-gradient(135deg,#fff3cf,#fff)}
+.island.c4 .disc{background:linear-gradient(135deg,#efe9ff,#fff)}
+.island.c5 .disc{background:linear-gradient(135deg,#ffe7e2,#fff)}
+.island.c6 .disc{background:linear-gradient(135deg,#ffe0f0,#efe9ff)}
+.island.recommended .disc{animation:glow 2s infinite}
+
+.home-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;margin-top:18px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:12px}
+.metric{border-radius:18px;padding:14px;background:var(--bg2)}
+.metric .v{font-size:28px;font-weight:800}
+.metric .l{font-size:13px;font-weight:700;color:var(--ink2)}
+.metric.m1{background:var(--teal-l)} .metric.m2{background:var(--sun-l)} .metric.m3{background:var(--sky-l)} .metric.m4{background:var(--lav-l)} .metric.m5{background:var(--coral-l)}
+.levels{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
+.level-btn{border-radius:16px;padding:12px;background:var(--bg2);text-align:left;border:3px solid transparent;font-weight:700}
+.level-btn b{display:block;font-size:16px}
+.level-btn span{font-size:12.5px;color:var(--ink2)}
+.level-btn[aria-pressed="true"]{border-color:var(--teal);background:var(--teal-l)}
+.seg{display:inline-flex;background:var(--bg2);border-radius:14px;padding:4px;gap:4px;flex-wrap:wrap}
+.seg button{padding:10px 14px;border-radius:11px;font-weight:800;min-height:44px}
+.seg button[aria-pressed="true"]{background:#fff;box-shadow:var(--shadow-s);color:var(--teal-d)}
+.row-set{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:14px}
+.switch{display:inline-flex;align-items:center;gap:10px;font-weight:700;cursor:pointer;min-height:44px}
+.switch input{width:22px;height:22px;accent-color:var(--teal)}
+.quick-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:18px}
+.quick{display:flex;gap:14px;align-items:center;text-align:left;padding:18px;border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);transition:transform .2s}
+.quick:hover{transform:translateY(-3px)}
+.quick .qi{font-size:34px;width:60px;height:60px;border-radius:18px;display:grid;place-items:center;flex:none}
+.quick b{display:block;font-size:17px}
+.quick span{font-size:13.5px;color:var(--ink2);font-weight:600}
+
+/* ---------- Игровой экран ---------- */
+.game-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between;margin-bottom:12px}
+.game-title{display:flex;align-items:center;gap:10px;flex:1;min-width:180px}
+.gt-icon{font-size:30px;width:52px;height:52px;border-radius:16px;background:#fff;display:grid;place-items:center;box-shadow:var(--shadow-s)}
+.gt-world{font-size:12.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.gt-name{font-size:21px;font-weight:800}
+.lvl-select{min-height:44px;border-radius:14px;border:2px solid var(--line);background:#fff;padding:6px 10px;font-weight:700}
+.progress-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dots i{width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 2px var(--line)}
+.dots i.cur{box-shadow:inset 0 0 0 3px var(--sky)}
+.dots i.ok{background:var(--teal);box-shadow:none}
+.dots i.help{background:var(--sun);box-shadow:none}
+.dots i.shown{background:var(--lav-l);box-shadow:inset 0 0 0 2px var(--lav)}
+.timer{flex:1;min-width:160px;height:14px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 2px var(--line);overflow:hidden}
+.timer i{display:block;height:100%;background:linear-gradient(90deg,var(--sky),var(--lav));transition:width 1s linear}
+.game-grid{display:grid;grid-template-columns:250px 1fr;gap:18px;align-items:start}
+.side{position:sticky;top:84px;display:flex;flex-direction:column;gap:12px}
+.side .bubble::before{display:none}
+.side .bubble{max-width:none}
+.side .fox{margin:0 auto}
+.dragon-box{background:linear-gradient(135deg,#2d2560,#4b3a99);color:#fff;border-radius:var(--radius);padding:14px;text-align:center;box-shadow:var(--shadow)}
+.dragon-box svg{width:130px;height:110px}
+.dragon-box.hit svg{animation:shake .5s}
+.orbs{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin-top:6px}
+.orbs i{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#c6a8ff 40%,#8a5cf6);box-shadow:0 0 8px #b796ff;transition:all .4s}
+.orbs i.gone{background:rgba(255,255,255,.18);box-shadow:none;transform:scale(.7)}
+.dragon-box .dl{font-size:13px;font-weight:700;opacity:.9}
+
+.task-card{padding:24px;position:relative}
+.task-card.enter{animation:pop .4s ease}
+.task-ask{font-size:18px;font-weight:800;color:var(--ink2);margin-bottom:8px;line-height:1.35}
+.task-type{display:inline-block;font-size:12px;font-weight:800;color:var(--lav-d);background:var(--lav-l);padding:4px 10px;border-radius:999px;margin-bottom:10px}
+.expr{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;font-size:clamp(40px,8vw,64px);font-weight:800;margin:14px 0 10px;letter-spacing:.5px}
+.expr .op{color:var(--lav)}
+.expr .eq{color:var(--muted)}
+.expr .num{color:var(--ink)}
+.expr .q{color:var(--coral)}
+.slot{position:relative}
+.ans-input{width:2.6ch;min-width:96px;height:1.35em;text-align:center;font-size:inherit;font-weight:800;border-radius:20px;border:4px dashed #b9c6e6;background:#f7faff;color:var(--teal-d);padding:0 6px;caret-color:var(--coral)}
+.ans-input:focus{border-style:solid;border-color:var(--sky);background:#fff;box-shadow:var(--focus)}
+.ans-input.ok{border-style:solid;border-color:var(--teal);background:var(--teal-l)}
+.ans-input.try{animation:shake .45s}
+.ans-input[disabled]{opacity:1;-webkit-text-fill-color:var(--teal-d)}
+.answer-zone{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:8px}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:min(330px,100%)}
+.keypad button{min-height:58px;border-radius:16px;font-size:26px;font-weight:800;background:#fff;box-shadow:0 5px 0 #dfe5f2,var(--shadow-s)}
+.keypad button:active{transform:translateY(3px);box-shadow:0 2px 0 #dfe5f2}
+.keypad .k-del{background:var(--coral-l);color:var(--coral-d)}
+.keypad .k-ok{background:linear-gradient(135deg,#2ec4b6,#22a5d0);color:#fff;box-shadow:0 5px 0 #178c95}
+.num-cards{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.num-card{min-width:72px;min-height:62px;padding:8px 14px;border-radius:16px;font-size:28px;font-weight:800;background:linear-gradient(135deg,#fff7dd,#fff);
+  box-shadow:0 5px 0 #f0d58a,var(--shadow-s);cursor:grab;touch-action:manipulation}
+.num-card:active{cursor:grabbing}
+.drop-hint{font-size:13px;color:var(--muted);font-weight:700}
+.slot.drag-over .ans-input{border-color:var(--sun);background:var(--sun-l)}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;width:100%}
+.choice{min-height:60px;padding:12px 16px;border-radius:18px;background:#fff;box-shadow:0 5px 0 #dfe5f2,var(--shadow-s);font-size:20px;font-weight:800;text-align:center}
+.choice:hover:not([disabled]){background:var(--sky-l)}
+.choice.tried{background:#f3f4f8;color:var(--muted);box-shadow:none;text-decoration:line-through}
+.choice.right{background:var(--teal-l);box-shadow:0 5px 0 #9fe3d9;color:var(--teal-d)}
+.choice .kbd{display:inline-block;font-size:12px;color:var(--muted);margin-right:6px}
+.sol-list{display:flex;flex-direction:column;gap:8px;width:100%}
+.sol-line{padding:10px 14px;border-radius:14px;background:var(--bg2);font-weight:700;color:var(--ink2);font-size:16px}
+.sol-line.pick{background:#fff;box-shadow:0 4px 0 #dfe5f2,var(--shadow-s);font-size:20px;color:var(--ink);text-align:left;min-height:54px}
+.sol-line.pick:hover:not([disabled]){background:var(--sun-l)}
+.sol-line.ans{background:var(--lav-l);color:var(--lav-d)}
+.order-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%}
+.order-col h4{margin:0 0 8px;font-size:14px;color:var(--muted)}
+.order-list{display:flex;flex-direction:column;gap:8px;min-height:120px;padding:10px;border-radius:18px;background:var(--bg2)}
+.order-item{display:flex;gap:10px;align-items:center;text-align:left;padding:10px 14px;border-radius:14px;background:#fff;box-shadow:0 4px 0 #dfe5f2;font-weight:700;font-size:16px;min-height:50px}
+.order-item .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--sky-l);color:var(--sky-d);flex:none;font-size:14px}
+.order-item.placed .n{background:var(--teal);color:#fff}
+.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:18px}
+.tool-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;padding-top:14px;border-top:2px dashed var(--line)}
+.tool-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 13px;border-radius:14px;background:var(--bg2);font-weight:800;font-size:14.5px;min-height:44px}
+.tool-btn[aria-pressed="true"]{background:var(--lav);color:#fff}
+.hint-box{margin-top:16px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#fff8dc,#fffdf3);border:2px solid #ffe08a;font-weight:700;line-height:1.45;animation:pop .35s ease}
+.hint-box .hl{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sun-d);margin-bottom:4px;font-weight:800}
+.hint-dots{display:inline-flex;gap:4px}
+.hint-dots i{width:10px;height:10px;border-radius:50%;background:#ffe9a8}
+.hint-dots i.on{background:var(--sun)}
+.feedback{margin-top:16px}
+.fb{padding:16px 18px;border-radius:20px;font-weight:700;line-height:1.45;animation:pop .35s ease}
+.fb.ok{background:linear-gradient(135deg,#dbfaf3,#effff9);border:2px solid #9fe3d9}
+.fb.try{background:linear-gradient(135deg,#fff1ec,#fffaf6);border:2px solid #ffc9b9}
+.fb.shown{background:linear-gradient(135deg,#f1ecff,#faf8ff);border:2px solid #d4c6ff}
+.fb .t{font-size:20px;font-weight:800;margin-bottom:4px}
+.fb .extra{margin-top:8px;font-size:15px;color:var(--ink2)}
+.fb .btn-row{margin-top:12px}
+.gain{display:inline-flex;align-items:center;gap:4px;background:#fff;padding:3px 10px;border-radius:999px;font-weight:800;margin-left:6px;box-shadow:var(--shadow-s)}
+.tool-panel{margin-top:16px;padding:16px;border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);animation:fadeUp .3s ease}
+.tool-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.tool-head h3{font-size:18px}
+.mini-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.mini{min-height:40px;min-width:46px;padding:6px 10px;border-radius:12px;background:var(--bg2);font-weight:800;font-size:15px}
+.mini.p{background:var(--teal-l);color:var(--teal-d)}
+.mini.m{background:var(--coral-l);color:var(--coral-d)}
+.mini[aria-pressed="true"]{background:var(--sky);color:#fff}
+.nl-svg{width:100%;height:auto;display:block;margin-top:6px}
+.tool-note{font-weight:700;color:var(--ink2);margin-top:8px;font-size:15px}
+
+/* Мост: визуальные блоки */
+.visual{margin:6px 0 4px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.blocks{display:flex;flex-wrap:wrap;align-items:flex-end;gap:5px;justify-content:center}
+.rod{display:grid;grid-template-rows:repeat(10,1fr);gap:2px;width:16px;height:120px;padding:2px;border-radius:6px;background:rgba(0,0,0,.05)}
+.rod i,.cube,.frame i{display:block;border-radius:3px}
+.rod i{background:var(--teal)}
+.rod.lav i{background:var(--lav)}
+.rod.coral i{background:var(--coral)}
+.cubes{display:grid;grid-template-columns:repeat(5,16px);gap:3px;align-content:end}
+.cube{width:16px;height:16px;background:var(--teal)}
+.cube.coral{background:var(--coral)} .cube.lav{background:var(--lav)} .cube.sun{background:var(--sun)}
+.cube.ghost{background:transparent;box-shadow:inset 0 0 0 2px var(--sun)}
+.cube.out{background:#e9edf6;box-shadow:inset 0 0 0 2px var(--coral);position:relative}
+.cube.pop{animation:pop .3s ease}
+.vis-row{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:center}
+.vis-cap{font-size:13px;font-weight:800;color:var(--ink2);text-align:center;margin-top:6px}
+.vis-op{font-size:30px;font-weight:800;color:var(--lav);align-self:center}
+.frame{display:grid;grid-template-columns:repeat(5,26px);grid-template-rows:repeat(2,26px);gap:4px;padding:6px;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 2px var(--line)}
+.frame i{border-radius:7px;background:#eef2fa}
+.frame i.a{background:var(--coral)} .frame i.b{background:var(--teal)}
+
+/* Таблица десятков */
+.pv-table{display:grid;grid-template-columns:1fr 1fr;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 2px var(--line);margin:8px 0;text-align:center}
+.pv-table div{padding:8px;font-weight:800}
+.pv-table .h1{background:var(--teal-l);color:var(--teal-d)}
+.pv-table .h2{background:var(--sun-l);color:var(--sun-d)}
+.pv-table .v{font-size:30px}
+.pv-area{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;align-items:flex-end;min-height:130px;padding:8px}
+.pv-units .cube{background:var(--sun)}
+.big-num{font-size:40px;font-weight:800;text-align:center}
+
+/* Сотня */
+.hgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;max-width:360px;margin:6px auto;padding:6px;background:#fff;border-radius:14px;box-shadow:inset 0 0 0 2px var(--line)}
+.hgrid i{aspect-ratio:1;border-radius:4px;background:#eef2fa;font-style:normal;font-size:9px;display:grid;place-items:center;color:#9aa6c4;font-weight:700}
+.hgrid i.f{background:var(--teal);color:#fff}
+.hgrid i.n{background:var(--sun);color:#6b4b00}
+.hgrid i.r{background:var(--lav-l);color:var(--lav-d)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:13px;font-weight:700;color:var(--ink2)}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+
+/* Шаги */
+.steps-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.steps-tabs button{padding:8px 12px;border-radius:12px;background:var(--bg2);font-weight:800;font-size:14px;min-height:42px}
+.steps-tabs button[aria-pressed="true"]{background:var(--lav);color:#fff}
+.steps-note{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:8px}
+.step-prev{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
+.step-prev div{font-size:14px;font-weight:700;color:var(--muted);padding:4px 10px;border-left:3px solid var(--line)}
+.step-cur{padding:16px;border-radius:18px;background:linear-gradient(135deg,var(--lav-l),#fbf9ff);animation:pop .3s ease}
+.step-cur .sn{font-size:12.5px;font-weight:800;color:var(--lav-d);margin-bottom:4px}
+.step-cur .st{font-size:24px;font-weight:800}
+.step-cur .st.info{font-size:19px}
+.step-cur .stn{font-size:14.5px;color:var(--ink2);font-weight:700;margin-top:6px}
+.step-q{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.step-q button{min-width:64px;min-height:48px;border-radius:14px;background:#fff;box-shadow:0 4px 0 #dfe5f2;font-weight:800;font-size:20px}
+.step-q button.tried{opacity:.4;text-decoration:line-through}
+.step-q .ql{font-weight:800;color:var(--ink2);width:100%;font-size:14px}
+.steps-nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+
+/* Семья чисел */
+.family{display:flex;justify-content:center}
+.family svg{width:220px;height:170px}
+
+/* Результаты, прогресс, библиотека */
+.results{text-align:center;max-width:720px;margin:0 auto}
+.results .big{font-size:76px;animation:bounce 1.2s ease 2}
+.results h2{font-size:30px;margin:6px 0}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:18px 0}
+.tag-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tag{padding:7px 12px;border-radius:999px;background:var(--sky-l);font-weight:700;font-size:14px}
+.badge-big{display:inline-flex;flex-direction:column;align-items:center;gap:6px;padding:16px 22px;border-radius:24px;background:linear-gradient(135deg,#fff3cf,#ffe7f4);box-shadow:var(--shadow);animation:pop .6s ease}
+.badge-big .bi{font-size:56px}
+.prog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:16px}
+.list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--bg2);font-weight:700}
+.bar{height:10px;border-radius:999px;background:#e6ebf6;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--sky))}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:10px}
+.badge{padding:12px;border-radius:18px;background:var(--bg2);text-align:center}
+.badge .bi{font-size:34px}
+.badge b{display:block;font-size:14px}
+.badge span{font-size:12px;color:var(--ink2);font-weight:600}
+.badge.locked{opacity:.45;filter:grayscale(1)}
+.badge.got{background:linear-gradient(135deg,#fff7dd,#efe9ff)}
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.tech-card{text-align:left;padding:18px;border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;transition:transform .2s;position:relative}
+.tech-card:hover{transform:translateY(-3px)}
+.tech-card .ti{font-size:34px}
+.tech-card b{font-size:18px}
+.tech-card .mn{font-size:14px;color:var(--ink2);font-weight:700;font-style:italic}
+.tech-card .st{position:absolute;right:14px;top:14px;font-size:12px;font-weight:800;padding:4px 9px;border-radius:999px;background:var(--bg2);color:var(--muted)}
+.tech-card .st.ok{background:var(--teal-l);color:var(--teal-d)}
+.tech-detail{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.mnemo{font-size:20px;font-weight:800;padding:14px 18px;border-radius:18px;background:linear-gradient(135deg,#fff3cf,#ffe7e2);margin:10px 0;color:#7a3b00}
+.why{padding:12px 16px;border-radius:16px;background:var(--sky-l);font-weight:700;line-height:1.45;margin-top:10px}
+.when{padding:12px 16px;border-radius:16px;background:var(--lav-l);font-weight:700;line-height:1.45;margin-top:10px}
+.explain{font-size:17px;line-height:1.5;font-weight:600}
+.metaphor{display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px;border-radius:20px;background:var(--bg2);margin-top:12px}
+.mini-task{margin-top:14px;padding:16px;border-radius:20px;background:linear-gradient(135deg,#e9fbf7,#f3f8ff)}
+.mini-task .mt-expr{font-size:34px;font-weight:800;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;margin:8px 0}
+.mini-task input{width:110px;height:58px;font-size:30px;text-align:center;font-weight:800;border-radius:16px;border:3px dashed #b9c6e6;background:#fff}
+.pairs-board{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;max-width:560px;margin:14px auto}
+.pcard{aspect-ratio:1/1.1;border-radius:20px;font-size:clamp(26px,6vw,40px);font-weight:800;background:#fff;box-shadow:0 6px 0 #dfe5f2,var(--shadow-s);transition:transform .2s,background .2s}
+.pcard.sel{background:var(--sky-l);transform:translateY(-4px);box-shadow:0 6px 0 #a9d3f7}
+.pcard.done{background:var(--teal-l);color:var(--teal-d);box-shadow:none;transform:scale(.92);opacity:.75}
+.pcard.no{animation:shake .4s}
+
+/* Модальное окно, всплывашки, эффекты */
+.modal-back{position:fixed;inset:0;z-index:60;background:rgba(36,49,80,.45);display:grid;place-items:center;padding:16px;animation:fadeUp .2s ease}
+.modal{width:min(520px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:26px;padding:24px;box-shadow:0 30px 60px rgba(0,0,0,.25)}
+.modal h2{font-size:22px;margin-bottom:10px}
+.modal .btn-row{margin-top:18px;justify-content:flex-end}
+.field{margin-top:14px}
+.field>label,.field>.lbl{display:block;font-weight:800;margin-bottom:6px}
+.toasts{position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:70;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:min(440px,92vw)}
+.toast{background:#fff;border-radius:18px;padding:12px 18px;box-shadow:0 16px 30px rgba(52,72,130,.25);font-weight:800;display:flex;gap:10px;align-items:center;animation:pop .4s ease;width:100%}
+.toast .ic{font-size:28px}
+.toast small{display:block;font-weight:700;color:var(--ink2)}
+.fx{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
+.fx .gem{position:absolute;font-size:28px}
+.fx .conf{position:absolute;top:-20px;width:10px;height:16px;border-radius:3px}
+.footer-note{text-align:center;color:var(--muted);font-size:13px;font-weight:600;margin-top:30px}
+
+/* ---------- Адаптивность ---------- */
+@media (max-width:900px){
+  .home-grid,.tech-detail{grid-template-columns:1fr}
+  .game-grid{grid-template-columns:1fr}
+  .side{position:static;flex-direction:row;align-items:center}
+  .side .fox{width:72px;height:72px;margin:0}
+  .side .bubble{flex:1;font-size:15px}
+  .side .dragon-box{display:flex;align-items:center;gap:10px;padding:8px 12px}
+  .side .dragon-box svg{width:70px;height:60px}
+  .side.has-dragon{flex-wrap:wrap}
+  .side.has-dragon .dragon-box{width:100%}
+}
+@media (max-width:700px){
+  main{padding:12px 10px 60px}
+  .hero{grid-template-columns:1fr;text-align:center;padding:20px}
+  .hero .btn-row{justify-content:center}
+  .hero .bubble::before{display:none}
+  .hero-fox .fox{width:110px;height:110px}
+  .map{aspect-ratio:auto;min-height:0;padding:14px;display:flex;flex-direction:column;gap:10px}
+  .map svg.map-path{display:none}
+  .island{position:static;transform:none;width:100%;flex-direction:row;gap:12px;background:rgba(255,255,255,.75);border-radius:20px;padding:10px;text-align:left}
+  .island .disc{width:62px;height:62px;font-size:30px;flex:none}
+  .island .txt{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+  .island .nm,.island .md{box-shadow:none;background:none;padding:0}
+  .task-card{padding:16px}
+  .order-wrap{grid-template-columns:1fr}
+  .levels{grid-template-columns:1fr 1fr}
+  .brand .txt small{display:none}
+  .hide-xs{display:none}
+  .pairs-board{grid-template-columns:repeat(4,1fr);gap:8px}
+  .keypad button{min-height:54px}
+}
+@media (min-width:701px){ .island .txt{display:contents} }
+@media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important} }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="brand" id="btnHome" type="button" aria-label="Матемагия — на главную">
+    <span class="logo" aria-hidden="true">✨</span>
+    <span class="txt">Матемагия<small>путешествие в страну чисел</small></span>
+  </button>
+  <div class="top-right">
+    <div class="chip crystal" title="Кристаллы знаний"><span aria-hidden="true">💎</span><b id="crystalCount">0</b><span class="sr-only">кристаллов</span></div>
+    <button class="icon-btn" id="btnSound" type="button" aria-pressed="true" aria-label="Звук включён">🔊</button>
+  </div>
+</header>
+<main id="main">
+  <section class="screen" id="scr-home" aria-label="Главный экран"></section>
+  <section class="screen" id="scr-game" aria-label="Игра"></section>
+  <section class="screen" id="scr-library" aria-label="Книга приёмов"></section>
+  <section class="screen" id="scr-tech" aria-label="Приём устного счёта"></section>
+  <section class="screen" id="scr-progress" aria-label="Мой прогресс"></section>
+  <section class="screen" id="scr-results" aria-label="Итоги"></section>
+  <section class="screen" id="scr-pairs" aria-label="Игра в пары"></section>
+</main>
+<div id="modalRoot"></div>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<div class="fx" id="fx" aria-hidden="true"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* =====================================================================
+   1. УТИЛИТЫ
+   ===================================================================== */
+function el(tag, props){
+  const n = document.createElement(tag);
+  if (props) {
+    for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') n.className = v;
+      else if (k === 'text') n.textContent = v;
+      else if (k === 'html') n.innerHTML = v; // только статичная разметка приложения (SVG из чисел)
+      else if (k === 'style') n.setAttribute('style', v);
+      else if (k.slice(0,2) === 'on' && typeof v === 'function') n.addEventListener(k.slice(2), v);
+      else if (v === true) n.setAttribute(k, '');
+      else n.setAttribute(k, v);
+    }
+  }
+  for (let i = 2; i < arguments.length; i++) appendKid(n, arguments[i]);
+  return n;
+}
+function appendKid(n, k){
+  if (k == null || k === false) return;
+  if (Array.isArray(k)) { k.forEach(x => appendKid(n, x)); return; }
+  n.appendChild(typeof k === 'object' ? k : document.createTextNode(String(k)));
+}
+function clear(n){ while (n.firstChild) n.removeChild(n.firstChild); return n; }
+const $ = s => document.querySelector(s);
+const rnd = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+const chance = p => Math.random() < p;
+const clamp = (v,lo,hi) => Math.max(lo, Math.min(hi, v));
+function shuffle(arr){ const a = arr.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function plural(n, one, few, many){ const a=Math.abs(n)%100, b=a%10; if (a>10&&a<20) return many; if (b===1) return one; if (b>=2&&b<=4) return few; return many; }
+/* Защита от двойного нажатия */
+function onTap(fn, delay){ let last = 0; const d = delay || 380; return function(e){ const t = Date.now(); if (t - last < d) return; last = t; fn.call(this, e); }; }
+const COARSE = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+
+/* =====================================================================
+   2. ХРАНИЛИЩЕ И ДАННЫЕ
+   ===================================================================== */
+function defaultData(){
+  return {
+    version: 1,
+    settings: { sound: true, level: 1, autoLevel: true, op: 'mix' },
+    stats: { solved:0, correct:0, firstTry:0, hints:0, fullHints:0, streak:0, bestStreak:0, crystals:0,
+             selfSolved:0, persist:0, dragonWins:0, pairsGames:0, byType:{}, byMode:{} },
+    tech: {}, learned: [], learnedLog: [], seenTech: [], badges: [], lastMode: null, adapt: []
+  };
+}
+function deepMerge(base, src){
+  if (!src || typeof src !== 'object') return base;
+  for (const k in src) {
+    const v = src[k];
+    if (v && typeof v === 'object' && !Array.isArray(v) && base[k] && typeof base[k] === 'object' && !Array.isArray(base[k])) base[k] = deepMerge(base[k], v);
+    else if (v !== undefined && (base[k] === undefined || typeof base[k] === typeof v)) base[k] = v;
+  }
+  return base;
+}
+const Store = {
+  KEY: 'matemagia-progress-v1', available: true,
+  init(){ try { localStorage.setItem('__mm_t','1'); localStorage.removeItem('__mm_t'); } catch(e){ this.available = false; } },
+  load(){
+    let parsed = null;
+    if (this.available) { try { const raw = localStorage.getItem(this.KEY); if (raw) parsed = JSON.parse(raw); } catch(e){ parsed = null; } }
+    const d = deepMerge(defaultData(), parsed || {});
+    d.settings.level = clamp(parseInt(d.settings.level,10)||1, 1, 4);
+    if (!['add','sub','mix'].includes(d.settings.op)) d.settings.op = 'mix';
+    return d;
+  },
+  save(d){ if (!this.available) return; try { localStorage.setItem(this.KEY, JSON.stringify(d)); } catch(e){ this.available = false; } },
+  reset(){ if (this.available) { try { localStorage.removeItem(this.KEY); } catch(e){} } }
+};
+const App = { data: null };
+function save(){ Store.save(App.data); }
+
+/* =====================================================================
+   3. МАТЕМАТИЧЕСКОЕ ЯДРО (единое для всех режимов)
+   ===================================================================== */
+const M = {
+  apply: (a,op,b) => op === '+' ? a + b : a - b,
+  sym: op => op === '+' ? '+' : '−',
+  inv: op => op === '+' ? '-' : '+',
+  up10: n => n % 10 === 0 ? n : n + 10 - n % 10,
+  down10: n => n - n % 10,
+  inRange: n => Number.isInteger(n) && n >= 0 && n <= 100,
+  valid(a,op,b){ return this.inRange(a) && this.inRange(b) && this.inRange(this.apply(a,op,b)); },
+  /* переход через десяток */
+  crosses(a,op,b){ return op === '+' ? (a%10)+(b%10) > 10 : (a%10) < (b%10); },
+  /* результат ровно круглый за счёт единиц */
+  makesRound(a,op,b){ return b%10 > 0 && (op === '+' ? (a%10)+(b%10) === 10 : (a%10) === (b%10)); },
+  expr(a,op,b){ return a + ' ' + this.sym(op) + ' ' + b; }
+};
+
+/* ---- Шаги решения ---- */
+const info = text => ({ kind:'info', text });
+function jump(x,o,y,note){ const r = M.apply(x,o,y); return { kind:'calc', text:`${x} ${M.sym(o)} ${y} = ${r}`, q:`${x} ${M.sym(o)} ${y} = ?`, r, x, o, y, from:x, to:r, label:M.sym(o)+y, chain:true, note:note||'' }; }
+function plain(x,o,y,note){ const s = jump(x,o,y,note); s.from = null; s.to = null; s.chain = false; return s; }
+function gap(x,y,note){ return { kind:'calc', text:`От ${x} до ${y} — ${y-x}`, q:`От ${x} до ${y} — сколько?`, r:y-x, from:x, to:y, label:'+'+(y-x), chain:false, note:note||'' }; }
+function sumOf(parts,note){ const r = parts.reduce((p,c)=>p+c,0); return { kind:'calc', text:`${parts.join(' + ')} = ${r}`, q:`${parts.join(' + ')} = ?`, r, from:null, to:null, chain:false, note:note||'' }; }
+function strat(id,tech,name,steps,hint){ return { id, tech, name, steps, hint }; }
+
+const Solver = {
+  /* Все корректные способы решения a op b, в порядке удобства */
+  strategies(a,op,b){
+    const add = op === '+', s = M.sym(op), r = M.apply(a,op,b);
+    const ua = a % 10, U = b % 10, T = b - U;
+    if (b === 0) return [strat('zero',null,'Ноль не меняет число',
+      [info(add ? 'Прибавить 0 — значит ничего не добавить.' : 'Отнять 0 — значит ничего не убрать.'), plain(a,op,0,`Число ${a} не изменилось.`)],
+      { q:`Что случится с числом ${a}, если ${add?'прибавить':'отнять'} 0?`, strat:'Ноль ничего не меняет: число остаётся прежним.', split:`Было ${a} кристаллов, ${add?'добавили':'забрали'} 0 кристаллов. Сколько стало?` })];
+    if (add && a === 0) return [strat('zeroA',null,'Ноль плюс число',
+      [info(`Было 0 — совсем ничего. Добавили ${b}.`), plain(0,'+',b,'Получилось само число.')],
+      { q:`Сколько будет, если к пустой корзинке добавить ${b}?`, strat:'Если к нулю прибавить число, получится само это число.', split:`0 + ${b} — это просто ${b} предметов.` })];
+    if (!add && a === b) return [strat('same',null,'Число минус само себя',
+      [info(`Было ${a}, и все ${a} убрали.`), plain(a,'-',b,'Ничего не осталось.')],
+      { q:`Было ${a}, убрали ${b}. Что-нибудь осталось?`, strat:'Если от числа отнять это же число, получится ноль.', split:`${a} и ${b} — одинаковые числа.` })];
+
+    const cross = this._cross = M.crosses(a,op,b), round = M.makesRound(a,op,b);
+    const S = {};
+
+    if (b < 10 && round) {
+      if (add) S.friends = strat('friends','D','Дружба до десяти',
+        [info(`${ua} и ${b} — друзья до десяти: вместе получается 10.`), info(`Значит, от ${a} мы дойдём ровно до круглого числа.`), jump(a,'+',b,'Получилось круглое число!')],
+        { q:`Сколько единиц в числе ${a}? С каким числом они дружат до десяти?`, strat:`Найди пару до десяти: ${ua} + ${b} = 10.`, split:`${ua} единиц и ещё ${b} — это целый новый десяток.` });
+      else S.drop = strat('dropUnits','C','Убираем все единицы',
+        [info(`В числе ${a} — ${ua} ${plural(ua,'единица','единицы','единиц')}.`), info('Если убрать все единицы, останутся только десятки.'), jump(a,'-',b,'Получилось круглое число!')],
+        { q:`Сколько единиц в числе ${a}?`, strat:'Убираем все единицы — остаются одни десятки.', split:`${a} = ${a-ua} + ${ua}. Убираем ${ua}.` });
+    }
+    if (b > 0 && b < 10 && !cross && !round) {
+      if (a >= 10) S.units = strat('units','C','Маленький прыжок',
+        [info(`${a} = ${a-ua} + ${ua}. Десятки не трогаем — работаем с единицами.`), plain(ua,op,b,'Считаем единицы.'), plain(a-ua,'+',M.apply(ua,op,b),'Возвращаем десятки на место.')],
+        { q:`Сколько единиц в числе ${a}?`, strat:'Десятки не меняются — работаем только с единицами.', split:`${ua} ${s} ${b} = ?, а десятки остаются: ${a-ua}.` });
+      else S.units = strat('units','C','Маленький прыжок',
+        [info(`Считаем ${add?'вперёд':'назад'} маленькими шажками.`), jump(a,op,b)],
+        { q:`Посчитай от ${a} ${add?'вперёд':'назад'} на ${b} ${plural(b,'шаг','шага','шагов')}.`, strat:'Можно отсчитать шажки по числовой прямой.', split:`${a} → ${M.apply(a,op,1)} → …` });
+    }
+    if (b > 0 && U === 0) {
+      const n = b/10, ta = Math.floor(a/10), tr = Math.floor(r/10);
+      S.tensOnly = strat('tensOnly','C','Большой прыжок десятками',
+        [info(`${b} — это ${n} ${plural(n,'десяток','десятка','десятков')}.`), info(`${ta} дес. ${s} ${n} дес. = ${tr} дес. Единицы не меняются: ${ua}.`), jump(a,op,b, add?`Большой прыжок вперёд на ${b}.`:`Большой прыжок назад на ${b}.`)],
+        { q:`Сколько десятков в числе ${b}?`, strat:'Меняются только десятки — единицы остаются прежними.', split:`${ta} дес. ${s} ${n} дес. = ? дес.` });
+    }
+    if (b >= 10 && U > 0) {
+      const mid = M.apply(a,op,T);
+      const st = [info(`Разложим ${b} на ${T} и ${U}.`), jump(a,op,T, add?'Большой прыжок — десятки.':'Большой прыжок назад — десятки.'), jump(mid,op,U,'Маленький прыжок — единицы.')];
+      if (M.crosses(mid,op,U)) {
+        if (add) st[2].note += ` Здесь переходим через десяток: ${mid} + ${10-mid%10} = ${M.up10(mid)}, и ещё ${U-(10-mid%10)}.`;
+        else if (mid%10 > 0) st[2].note += ` Здесь переходим через десяток: ${mid} − ${mid%10} = ${M.down10(mid)}, и ещё ${U-mid%10}.`;
+        else st[2].note += ` От круглого ${mid} отнимаем ${U}: ${10-U} и ${U} — друзья до десяти.`;
+      }
+      S.split = strat('split','B','Числовой разрез', st,
+        { q:`Сколько десятков и сколько единиц в числе ${b}?`, strat: add?'Прибавь сначала десятки, а потом единицы.':'Отними сначала десятки, а потом единицы.', split:`${b} = ${T} + ${U}. Начни с ${a} ${s} ${T}.` });
+    }
+    if (a >= 10 && b >= 10 && U > 0 && !cross && !round) {
+      const ta = a-ua, tb = b-U, t1 = M.apply(ta,op,tb), u1 = M.apply(ua,op,U);
+      S.place = strat('place','B','Десятки с десятками',
+        [info(`${a} = ${ta} + ${ua}, ${b} = ${tb} + ${U}.`), info(add?'Сложим десятки с десятками, а единицы — с единицами.':'Из десятков вычтем десятки, из единиц — единицы.'),
+         plain(ta,op,tb,'Десятки.'), plain(ua,op,U,'Единицы.'), plain(t1,'+',u1,'Соединяем десятки и единицы.')],
+        { q:`Сколько десятков в числах ${a} и ${b}?`, strat: add?'Десятки складываем с десятками, единицы — с единицами.':'Десятки вычитаем из десятков, единицы — из единиц.', split:`${ta} ${s} ${tb} и ${ua} ${s} ${U}.` });
+    }
+    if (add) {
+      const need = (10-ua)%10;
+      if ((cross || (round && b >= 10)) && need > 0 && b > need) {
+        const R = a + need, rest = b - need;
+        S.bridge = strat('bridge','A','Мостик к десятку',
+          [info(`До ${R} не хватает ${need}.`), info(`Разложим ${b} на ${need} и ${rest}.`), jump(a,'+',need,'Допрыгнули до круглого числа!'), jump(R,'+',rest,'Прибавляем остаток.')],
+          { q:`Сколько нужно прибавить к ${a}, чтобы получить ${R}?`, strat:`Сначала дойди до круглого числа ${R}, а потом прибавь остаток.`, split:`Разложи ${b} на ${need} и ${rest}.` });
+      }
+    } else if (ua > 0 && b > ua && (cross || (round && b >= 10))) {
+      const R = a - ua, rest = b - ua;
+      S.bridge = strat('bridge','A','Мостик к десятку',
+        [info(`Сначала отнимем ${ua}, чтобы получить круглое ${R}.`), info(`Разложим ${b} на ${ua} и ${rest}.`), jump(a,'-',ua,'Спустились до круглого числа!'), jump(R,'-',rest,'Отнимаем остаток.')],
+        { q:`Сколько нужно отнять от ${a}, чтобы получилось ${R}?`, strat:`Спустись сначала до круглого числа ${R}, а потом отними остаток.`, split:`Разложи ${b} на ${ua} и ${rest}.` });
+    }
+    if (!add && ua === 0 && b > 0 && b < 10 && a >= 10) {
+      S.roundSub = strat('roundSub','D','Разменяем десяток',
+        [info(`${a} = ${a-10} + 10. Один десяток разменяем.`), plain(10,'-',b,`${b} и ${10-b} — друзья до десяти.`), plain(a-10,'+',10-b,'Соединяем.')],
+        { q:`Какое число дружит с ${b} до десяти?`, strat:`Представь ${a} как ${a-10} и ещё 10. От десятка отнять легко!`, split:`10 − ${b} = ?, потом прибавь к ${a-10}.` });
+    }
+    const B10 = M.up10(b), extra = B10 - b;
+    if (b >= 8 && U >= 8 && (add ? a + B10 <= 100 : a >= B10)) {
+      S.comp = add
+        ? strat('comp','G','Компенсация',
+          [info(`${b} — почти ${B10}. А ${B10} прибавлять легко!`), jump(a,'+',B10,`Прибавили ${B10} — это на ${extra} больше, чем нужно.`), info(`Мы прибавили лишнее (${extra}) — теперь вернём его: отнимем ${extra}.`), jump(a+B10,'-',extra,'Теперь сумма правильная!')],
+          { q:`Какое круглое число близко к ${b}?`, strat:'Сделай число удобным, а потом верни лишнее.', split:`Прибавь ${B10}, а потом отними ${extra}.` })
+        : strat('comp','G','Компенсация',
+          [info(`${b} — почти ${B10}. Отнимать ${B10} легко!`), jump(a,'-',B10,`Мы отняли на ${extra} больше, чем нужно.`), info(`Мы отняли лишнее (${extra}) — вернём его обратно: прибавим ${extra}.`), jump(a-B10,'+',extra,'Теперь ответ правильный!')],
+          { q:`Какое круглое число близко к ${b}?`, strat:'Сделай число удобным, а потом верни лишнее.', split:`Отними ${B10}, а потом прибавь ${extra} обратно.` });
+    }
+    if (add && ua >= 8 && b >= 10 && cross) {
+      const need = 10-ua, R = a+need, b2 = b-need;
+      S.balance = strat('balance','G','Переложим единицы',
+        [info(`${a} почти ${R}: не хватает ${need}.`), plain(a,'+',need,`Дадим ${need} первому числу.`), plain(b,'-',need,`Заберём ${need} у второго числа.`), info('Сколько дали, столько и забрали — сумма не изменилась.'), jump(R,'+',b2,'Считаем удобную сумму.')],
+        { q:`Сколько не хватает числу ${a} до ${R}?`, strat:'Возьми немного у одного слагаемого и отдай другому — сумма не изменится.', split:`${a} + ${need} = ${R}, а ${b} − ${need} = ${b2}.` });
+    }
+    if (add && a >= 5 && b >= 5 && Math.abs(a-b) <= 2) {
+      const m = Math.min(a,b), d = Math.abs(a-b), mt = m - m%10, mu = m%10;
+      S.dbl = d === 0
+        ? strat('doubles','I','Удвоение',
+          [info('Одинаковые числа — значит, удваиваем.'), plain(mt,'+',mt,'Удвоили десятки.'), plain(mu,'+',mu,'Удвоили единицы.'), plain(mt*2,'+',mu*2,'Соединяем.')],
+          { q:`Сколько десятков и единиц в числе ${m}?`, strat:'Удвой отдельно десятки и единицы.', split:`${mt} + ${mt} и ${mu} + ${mu}.` })
+        : strat('doubles','I','Удвоение',
+          [info(`${a} и ${b} — почти близнецы: отличаются на ${d}.`), info(`Значит, ${a} + ${b} = ${m} + ${m} + ${d}.`), plain(m,'+',m,'Удвоили меньшее число.'), jump(m*2,'+',d,'Добавили разницу.')],
+          { q:`На сколько отличаются ${a} и ${b}?`, strat:'Если числа почти одинаковые, удвой меньшее и прибавь разницу.', split:`${m} + ${m} = ?, а потом + ${d}.` });
+    }
+    if (!add && U > 0 && b >= 10 && (a === 100 || (cross && r <= 20))) {
+      const steps = [info(a === 100 ? `Посчитаем, сколько не хватает от ${b} до 100.` : `Посчитаем, сколько от ${b} до ${a}.`)], parts = [];
+      let cur = b; const r1 = M.up10(cur);
+      if (r1 !== cur && r1 <= a) { steps.push(gap(cur, r1, 'До круглого числа.')); parts.push(r1-cur); cur = r1; }
+      const r2 = M.down10(a);
+      if (r2 > cur) { steps.push(gap(cur, r2, 'Десятками.')); parts.push(r2-cur); cur = r2; }
+      if (a > cur) { steps.push(gap(cur, a, 'Последний шажок.')); parts.push(a-cur); cur = a; }
+      if (parts.length > 1) steps.push(sumOf(parts,'Складываем все прыжки.'));
+      S.count = strat('countUp','E', a === 100 ? 'Волшебная сотня' : 'Считаем вперёд', steps,
+        { q:`Сколько от ${b} до ${r1}?`, strat: a === 100 ? '«До 100 считаем, сколько не хватает»: прыгай вперёд.' : 'Вычитание — это расстояние между числами. Посчитай, сколько от меньшего до большего.', split:`От ${b} до ${r1}, потом от ${r1} до ${a}.` });
+    }
+
+    let order;
+    if (add) order = cross ? (b < 10 ? ['bridge','comp','dbl'] : ['split','bridge','comp','balance','dbl'])
+                           : ['friends','units','tensOnly','split','place','bridge','comp','dbl'];
+    else if (a === 100) order = ['roundSub','count','tensOnly','split','comp'];
+    else order = cross ? (b < 10 ? ['bridge','roundSub','comp'] : ['split','bridge','comp','count'])
+                       : ['drop','units','tensOnly','split','place','bridge','comp'];
+    let list = order.map(k => S[k]).filter(Boolean);
+    if (!list.length) list = [strat('direct',null,'Посчитаем',[jump(a,op,b)],{ q:`Сколько будет ${M.expr(a,op,b)}?`, strat:'Можно воспользоваться числовой прямой.', split:`Начни с ${a}.` })];
+    // контроль: последний шаг каждого способа обязан давать правильный ответ
+    return list.filter(st => { const c = st.steps.filter(x => x.kind === 'calc'); return c.length && c[c.length-1].r === r; });
+  },
+  asJumps(st){
+    return Object.assign({}, st, { id:'jumps', tech:'C', name:'Умный прыжок',
+      hint: Object.assign({}, st.hint, { strat:'«Десятки — большой прыжок, единицы — маленький».' }) });
+  },
+  prefer(list, tech){
+    if (!tech) return list;
+    const i = list.findIndex(x => x.tech === tech);
+    if (tech === 'C') {
+      const j = list.findIndex(x => x.id === 'split');
+      if (j >= 0 && (i < 0 || j < i)) return [this.asJumps(list[j])].concat(list.filter((_,k)=>k!==j));
+    }
+    if (i > 0) return [list[i]].concat(list.filter((_,k)=>k!==i));
+    return list;
+  }
+};
+
+/* =====================================================================
+   4. ГЕНЕРАТОР ЗАДАНИЙ
+   ===================================================================== */
+const SLOT = { slot: true };
+const LEVELS = {
+  1: { name:'Начинающий', icon:'🌱', desc:'Без перехода через десяток, небольшие числа' },
+  2: { name:'Исследователь', icon:'🧭', desc:'Десятки и единицы, простые переходы' },
+  3: { name:'Мастер', icon:'🎓', desc:'Переходы через десяток, круглые числа, неизвестные' },
+  4: { name:'Волшебник', icon:'🧙', desc:'Смешанные примеры до 100, проверка и поиск ошибок' }
+};
+const LEVEL_CFG = {
+  1: { aMin:2,  aMax:40,  maxRes:50,  cross:()=>false,                    kind:()=> chance(.75)?'one':'tens' },
+  2: { aMin:10, aMax:90,  maxRes:100, cross:()=>chance(.5),               kind:()=> chance(.6)?'one':(chance(.5)?'two':'tens') },
+  3: { aMin:11, aMax:99,  maxRes:100, cross:()=>chance(.7),               kind:()=> chance(.75)?'two':'one' },
+  4: { aMin:0,  aMax:100, maxRes:100, cross:()=>chance(.5)?undefined:true, kind:()=> chance(.7)?'two':'any' }
+};
+const FALLBACK = { '+true':[28,7], '+false':[34,5], '-true':[53,6], '-false':[47,3], '+undefined':[36,27], '-undefined':[72,25] };
+
+const Gen = {
+  b(kind){
+    if (kind === 'one') return rnd(1,9);
+    if (kind === 'tens') return rnd(1,6)*10;
+    if (kind === 'two') { let v = rnd(11,89); if (v%10 === 0) v += rnd(1,9); return v; }
+    return rnd(0,100);
+  },
+  /* Подбор пары чисел под навык. Цикл ограничен — зависание невозможно. */
+  pair(op, level, o){
+    o = o || {};
+    const cfg = LEVEL_CFG[clamp(level,1,4)];
+    let cross = ('cross' in o) ? o.cross : cfg.cross();
+    let kind = o.bKind || cfg.kind();
+    if (cross === true && kind === 'tens') kind = 'one';
+    if (level === 2 && cross === true && !o.bKind) kind = 'one';
+    const aMin = o.aMin != null ? o.aMin : cfg.aMin, aMax = o.aMax != null ? o.aMax : cfg.aMax, maxRes = o.maxRes || cfg.maxRes;
+    for (let i = 0; i < 500; i++) {
+      const a = rnd(aMin, aMax), b = this.b(kind);
+      if (!M.valid(a,op,b)) continue;
+      const r = M.apply(a,op,b);
+      if (r > maxRes) continue;
+      if (o.minRes != null && r < o.minRes) continue;
+      if (cross === true && !M.crosses(a,op,b)) continue;
+      if (cross === false && M.crosses(a,op,b)) continue;
+      if (o.test && !o.test(a,b)) continue;
+      return [a,b];
+    }
+    const f = FALLBACK[op + String(cross)] || (op === '+' ? [34,5] : [47,3]);
+    return f.slice();
+  },
+  op(ctx){ return ctx.op(); }
+};
+
+function numOptions(ans, n){
+  n = n || 4;
+  const set = new Set([ans]);
+  const sw = (ans >= 10 && ans < 100 && ans%10 !== 0) ? (ans%10)*10 + Math.floor(ans/10) : -1;
+  const cands = shuffle([ans+1, ans-1, ans+10, ans-10, ans+2, ans-2, sw, ans+11, ans-9]);
+  for (const c of cands) { if (set.size >= n) break; if (M.inRange(c)) set.add(c); }
+  for (let k = 3; set.size < n && k < 120; k++) { const c = ans + (chance(.5) ? k : -k); if (M.inRange(c)) set.add(c); }
+  return shuffle(Array.from(set));
+}
+function hintsOf(st){ return [st.hint.q, st.hint.strat, st.hint.split]; }
+function lineOf(st, a, op, b){
+  const js = st.steps.filter(x => x.kind === 'calc' && x.from != null).map(x => ({ from:x.from, to:x.to, label:x.label }));
+  if (!js.length) js.push({ from:a, to:M.apply(a,op,b), label:M.sym(op)+b });
+  return { start: js[0].from, jumps: js };
+}
+function keyOf(a,op,b){
+  if (a === 0 || b === 0 || (op === '-' && a === b)) return 'edge';
+  if ((op === '-' && a === 100) || (op === '+' && a + b === 100)) return 'hundred';
+  if (M.makesRound(a,op,b) || b%10 === 0) return 'round';
+  return (op === '+' ? 'add_' : 'sub_') + (M.crosses(a,op,b) ? 'cross' : 'nocross');
+}
+let TASK_ID = 0;
+function choiceTask(o){ return Object.assign({ id:++TASK_ID, kind:'choice' }, o); }
+
+const Tasks = {
+  arith(a, op, b, o){
+    o = o || {};
+    const strategies = Solver.prefer(Solver.strategies(a,op,b), o.tech);
+    const p = strategies[0];
+    return { id:++TASK_ID, type:'arith', kind:'number', key:o.key || keyOf(a,op,b), tech:p.tech || o.tech || null,
+      a, op, b, answer:M.apply(a,op,b),
+      view:{ ask:o.ask || pick(['Сколько получится?','Посчитай в уме:','Реши пример:']), expr:[a, M.sym(op), b, '=', SLOT], label:o.label || null },
+      strategies, hints:hintsOf(p), line:lineOf(p,a,op,b), sig:'A'+a+op+b, guided:!!o.guided, bridgeVis:!!o.bridgeVis };
+  },
+  edge(){
+    const g = pick([
+      () => { const a = rnd(1,99); return [a,'+',100-a]; },
+      () => [100,'-',rnd(1,99)],
+      () => { const a = rnd(1,100); return [a,'-',a]; },
+      () => [rnd(1,100),'+',0],
+      () => [0,'+',rnd(1,100)],
+      () => [rnd(1,100),'-',0],
+      () => [100,'-',100]
+    ])();
+    return this.arith(g[0], g[1], g[2], { ask:'Пример с границы страны чисел:' });
+  },
+  missingFrom(a, op, b, form, o){
+    o = o || {};
+    const c = M.apply(a,op,b);
+    let expr, ans, inv, rel, q, key, family, chk;
+    if (form === 'x+b') { expr=[SLOT,'+',b,'=',c]; ans=a; inv=[c,'-',b]; key='missing_add'; chk=`${a} + ${b} = ${c}`;
+      rel=`К неизвестному числу прибавили ${b} и получили ${c}. Чтобы найти его, от ${c} отнимем ${b}.`; q=`Какое число вместе с ${b} даёт ${c}?`; family={ whole:c, parts:[a,b], unknown:0 }; }
+    else if (form === 'a+x') { expr=[a,'+',SLOT,'=',c]; ans=b; inv=[c,'-',a]; key='missing_add'; chk=`${a} + ${b} = ${c}`;
+      rel=`К ${a} прибавили неизвестное число и получили ${c}. Найдём его так: ${c} − ${a}.`; q=`Сколько не хватает от ${a} до ${c}?`; family={ whole:c, parts:[a,b], unknown:1 }; }
+    else if (form === 'a-x') { expr=[a,'−',SLOT,'=',c]; ans=b; inv=[a,'-',c]; key='missing_sub'; chk=`${a} − ${b} = ${c}`;
+      rel=`Из ${a} отняли неизвестное число и осталось ${c}. Значит, отняли ${a} − ${c}.`; q=`Сколько нужно убрать из ${a}, чтобы осталось ${c}?`; family={ whole:a, parts:[b,c], unknown:0 }; }
+    else { expr=[SLOT,'−',b,'=',c]; ans=a; inv=[c,'+',b]; key='missing_minuend'; chk=`${a} − ${b} = ${c}`;
+      rel=`Из неизвестного числа отняли ${b} и осталось ${c}. Значит, сначала было ${c} + ${b}.`; q=`Каким было число, если после того, как отняли ${b}, осталось ${c}?`; family={ whole:a, parts:[b,c], unknown:'whole' }; }
+    const invS = Solver.strategies(inv[0], inv[1], inv[2]);
+    const strategies = invS.map(st => Object.assign({}, st, { steps:[info(rel)].concat(st.steps, [info(`Неизвестное число — ${ans}. Проверка: ${chk} ✓`)]) }));
+    return { id:++TASK_ID, type:'missing', kind:'number', key:o.key || key, tech:o.tech || 'F', answer:ans,
+      view:{ ask:o.ask || 'Найди спрятанное число:', expr, family, label:'Числовой детектив' },
+      strategies, hints:[q, rel, `Посчитай: ${M.expr(inv[0],inv[1],inv[2])}. ${invS[0].hint.split}`],
+      line:lineOf(invS[0], inv[0], inv[1], inv[2]), sig:'X'+form+a+op+b, cards:numOptions(ans,4), detective:true };
+  },
+  missing(level, o){
+    o = o || {};
+    const forms = o.forms || (level <= 1 ? ['x+b','a+x','a-x'] : ['x+b','a+x','a-x','x-b']);
+    const form = pick(forms);
+    const op = form.indexOf('+') >= 0 ? '+' : '-';
+    const p = Gen.pair(op, Math.max(1,level), Object.assign({ test:(a,b)=>a>0 && b>0 && M.apply(a,op,b)>0 }, o.pair || {}));
+    return this.missingFrom(p[0], op, p[1], form, o);
+  },
+  chain(level){
+    const p = Gen.pair('+', 3, { maxRes:95, minRes:20 });
+    const a = p[0], b = p[1], s = a + b, c = rnd(Math.min(5, s), Math.min(s - 1, 60));
+    const r = s - c;
+    const s1 = Solver.strategies(a,'+',b)[0], s2 = Solver.strategies(s,'-',c)[0];
+    const st = strat('chain',null,'По порядку',
+      [info('Считаем по порядку: слева направо.')].concat(s1.steps, [info(`Теперь от ${s} отнимем ${c}.`)], s2.steps),
+      { q:'Какое действие нужно сделать первым?', strat:'Считай по порядку: сначала сложение, потом вычитание.', split:`Сначала найди ${a} + ${b}.` });
+    return { id:++TASK_ID, type:'chain', kind:'number', key:'chain', tech:null, answer:r,
+      view:{ ask:'Вычисление в два шага:', expr:[a,'+',b,'−',c,'=',SLOT], label:'Несколько шагов' },
+      strategies:[st], hints:hintsOf(st),
+      line:{ start:a, jumps:[{from:a,to:s,label:'+'+b},{from:s,to:r,label:'−'+c}] }, sig:'C'+a+'+'+b+'-'+c };
+  },
+  decompose(level){
+    let n = rnd(11, 99); if (n%10 === 0) n += rnd(1,9);
+    const t = n - n%10, u = n%10, tn = t/10;
+    const st = strat('decomp','B','Числовой разрез',
+      [info(`В числе ${n}: ${tn} ${plural(tn,'десяток','десятка','десятков')} и ${u} ${plural(u,'единица','единицы','единиц')}.`), info(`${tn} ${plural(tn,'десяток','десятка','десятков')} — это ${t}. Значит, ${n} = ${t} + ${u}.`)],
+      { q:`Какая цифра в числе ${n} показывает десятки?`, strat:'В двузначном числе первая цифра — десятки, вторая — единицы.', split:`${tn} ${plural(tn,'десяток','десятка','десятков')} — это ${t}.` });
+    if (chance(.55)) {
+      const opts = new Set([`${t} + ${u}`, `${tn} + ${u}`]);
+      opts.add(u !== tn ? `${u*10} + ${tn}` : `${t+10} + ${u}`);
+      opts.add(t >= 20 && u < 9 ? `${t-10} + ${u+1}` : `${t} + ${Math.min(9,u+1) === u ? u-1 : Math.min(9,u+1)}`);
+      let arr = Array.from(opts); while (arr.length < 4) arr.push(`${t+10*arr.length} + ${u}`);
+      arr = shuffle(arr.slice(0,4));
+      return choiceTask({ type:'decompose', key:'decompose', tech:'B', view:{ ask:`Разложи число ${n} на десятки и единицы:`, big:String(n), label:'Числовой разрез' },
+        options:arr.map(x=>({text:`${n} = ${x}`})), answer:arr.indexOf(`${t} + ${u}`), strategies:[st], hints:hintsOf(st),
+        line:{ start:0, jumps:[{from:0,to:t,label:'+'+t},{from:t,to:n,label:'+'+u}] }, sig:'D'+n, num:n });
+    }
+    const askTens = chance(.5);
+    return { id:++TASK_ID, type:'decompose', kind:'number', key:'decompose', tech:'B', answer: askTens ? tn : u,
+      view:{ ask: askTens ? `Сколько десятков в числе ${n}?` : `Сколько единиц в числе ${n}?`, big:String(n), expr:[SLOT], label:'Числовой разрез' },
+      strategies:[st], hints:hintsOf(st), line:{ start:0, jumps:[{from:0,to:t,label:'+'+t},{from:t,to:n,label:'+'+u}] }, sig:'D'+n+askTens, num:n };
+  },
+  chooseRound(level){
+    const op = chance(.5) ? '+' : '-';
+    const p = Gen.pair(op, Math.max(2, level), { cross:true, test:(a)=>a%10>0 });
+    const a = p[0], b = p[1], ans = op === '+' ? M.up10(a) : M.down10(a);
+    const wrong = op === '+' ? [M.down10(a), ans+10, ans+20, ans-20] : [M.up10(a), ans-10, ans-20, ans+20];
+    const set = [ans]; wrong.forEach(w => { if (M.inRange(w) && set.indexOf(w) < 0 && set.length < 4) set.push(w); });
+    const arr = shuffle(set);
+    const strategies = Solver.prefer(Solver.strategies(a,op,b), 'A');
+    return choiceTask({ type:'chooseRound', key:'choose_round', tech:'A',
+      view:{ ask:`Решаем ${M.expr(a,op,b)}. До какого круглого числа удобно дойти первым шагом?`, expr:[a, M.sym(op), b, '=', '?'], label:'Выбери удобное число' },
+      options:arr.map(x=>({text:String(x)})), answer:arr.indexOf(ans), strategies,
+      hints:[ op === '+' ? `Какое круглое число идёт сразу после ${a}?` : `Какое круглое число стоит прямо перед ${a}?`,
+              '«Сначала до круглого, потом остаток».',
+              op === '+' ? `${a} → ${a+1} → … → круглое число` : `${a} → ${a-1} → … → круглое число` ],
+      line:lineOf(strategies[0],a,op,b), sig:'R'+a+op+b, a, op, b });
+  },
+  order(level){
+    for (let i = 0; i < 20; i++) {
+      const op = chance(.5) ? '+' : '-';
+      const p = Gen.pair(op, Math.max(2, level), { cross:true, bKind: level >= 3 ? 'two' : 'one' });
+      const strats = Solver.strategies(p[0], op, p[1]);
+      const st = strats.find(x => ['bridge','split','comp'].indexOf(x.id) >= 0);
+      if (!st) continue;
+      let steps = st.steps.slice();
+      if (st.id === 'bridge') steps = steps.slice(1);
+      const items = steps.map(x => x.text);
+      if (items.length < 3 || new Set(items).size !== items.length) continue;
+      let shown = shuffle(items.map((_,k)=>k)); let g = 0;
+      while (shown.every((v,k)=>v===k) && g++ < 10) shown = shuffle(shown);
+      return { id:++TASK_ID, type:'order', kind:'order', key:'order', tech:st.tech,
+        view:{ ask:`Расставь шаги решения по порядку: ${M.expr(p[0],op,p[1])}`, label:'Конструктор решения' },
+        items, shown, answer:items.map((_,k)=>k), strategies:[st].concat(strats.filter(x=>x!==st)),
+        hints:['Какой шаг нужно сделать самым первым?', st.hint.strat, `Первый шаг: «${items[0]}»`],
+        line:lineOf(st,p[0],op,p[1]), sig:'O'+p[0]+op+p[1], a:p[0], op, b:p[1] };
+    }
+    return this.decompose(level);
+  },
+  error(level){
+    for (let tries = 0; tries < 25; tries++) {
+      const op = chance(.5) ? '+' : '-';
+      const p = Gen.pair(op, Math.max(2, level), { cross:true, bKind: level >= 3 ? 'two' : 'one' });
+      const a = p[0], b = p[1];
+      const strats = Solver.strategies(a,op,b);
+      const cand = strats.filter(st => ['bridge','split','comp'].indexOf(st.id) >= 0);
+      if (!cand.length) continue;
+      const st = pick(cand);
+      const calcIdx = st.steps.map((x,i)=>x.kind==='calc'?i:-1).filter(i=>i>=0);
+      if (calcIdx.length < 2) continue;
+      const k = pick(calcIdx);
+      const deltas = shuffle([10,-10,1,-1,2,-2]);
+      for (const delta of deltas) {
+        let carry = null, okRange = true;
+        const lines = st.steps.map((x,i) => {
+          if (x.kind === 'info') return { text:x.text, calc:false };
+          const xx = (carry != null && x.chain) ? carry : x.x;
+          let r = M.apply(xx, x.o, x.y); if (i === k) r += delta;
+          if (!M.inRange(r) || !M.inRange(xx)) okRange = false;
+          carry = r;
+          return { text:`${xx} ${M.sym(x.o)} ${x.y} = ${r}`, calc:true, idx:i };
+        });
+        if (!okRange) continue;
+        const final = carry;
+        if (final === M.apply(a,op,b)) continue;
+        const calcLines = lines.filter(l => l.calc);
+        const wrongPos = calcLines.findIndex(l => l.idx === k);
+        const correctText = st.steps[k].text;
+        const strategies = [Object.assign({}, st, { steps: st.steps.concat([info(`Ошибка была в шаге «${calcLines[wrongPos].text}». Верно: ${correctText}.`)]) })].concat(strats.filter(x=>x!==st));
+        return choiceTask({ type:'error', key:'error', tech:'H',
+          view:{ ask:`Ученик решал пример ${M.expr(a,op,b)} и в одном шаге ошибся. Найди ошибочный шаг!`, solution:lines, finalLine:`Ответ ученика: ${final}`, label:'Найди ошибку' },
+          options:calcLines.map(l=>({text:l.text})), answer:wrongPos, strategies,
+          hints:['Проверь каждую строчку отдельно: посчитай сам и сравни.', 'Пересчитай каждый шаг — можно на числовой прямой.', `Правильный ответ всего примера — ${M.apply(a,op,b)}. Где решение пошло не туда?`],
+          line:lineOf(st,a,op,b), sig:'E'+a+op+b, a, op, b });
+      }
+    }
+    return this.verify(level);
+  },
+  verify(level){
+    const op = chance(.5) ? '+' : '-';
+    const p = Gen.pair(op, Math.max(2, level), { test:(a,b)=>a>0&&b>0 });
+    const a = p[0], b = p[1], r = M.apply(a,op,b);
+    let shown = r;
+    if (chance(.5)) {
+      for (const d of shuffle([10,-10,1,-1,2,-2])) {
+        const v = r + d;
+        if (!M.inRange(v)) continue;
+        if (op === '+' && v < b) continue;
+        if (op === '-' && v + b > 100) continue;
+        shown = v; break;
+      }
+    }
+    const io = M.inv(op), back = M.apply(shown, io, b), good = shown === r;
+    const st = strat('check','H','Проверка следопыта',
+      [info(op === '+' ? 'Сложение проверяем вычитанием.' : 'Вычитание проверяем сложением.'), plain(shown, io, b, `Должно получиться ${a}.`),
+       info(good ? `Получилось ${a} — запись верная!` : `Получилось ${back}, а должно быть ${a}. Значит, в записи ошибка. Верный ответ: ${r}.`)],
+      { q:'Каким действием можно проверить эту запись?', strat:'«Проверь обратным действием»: сложение проверяем вычитанием, а вычитание — сложением.', split:`Посчитай ${shown} ${M.sym(io)} ${b} и сравни с ${a}.` });
+    return choiceTask({ type:'verify', key:'verify', tech:'H',
+      view:{ ask:'Следопыт проверяет запись. Она верная?', expr:[a, M.sym(op), b, '=', shown], label:'Проверка следопыта' },
+      options:[{text:'✔ Верно'},{text:'✘ Есть ошибка'}], answer: good ? 0 : 1,
+      strategies:[st].concat(Solver.strategies(a,op,b)), hints:hintsOf(st),
+      line:{ start:shown, jumps:[{from:shown,to:back,label:M.sym(io)+b}] }, sig:'V'+a+op+b+shown, a, op, b });
+  },
+  family(level){
+    const p = Gen.pair('+', Math.max(2, level), { test:(a,b)=>a>0&&b>0&&a!==b });
+    const a = p[0], b = p[1], c = a + b;
+    const askB = chance(.5);
+    const sub = askB ? a : b, ans = askB ? b : a;
+    const st = strat('family','F','Семья обратных действий',
+      [info(`Числа ${a}, ${b} и ${c} — одна семья: ${c} — целое, ${a} и ${b} — его части.`), info('Если из целого убрать одну часть, останется другая часть.'), plain(c,'-',sub,'Пересчитывать не нужно — ответ уже есть в семье!')],
+      { q:`Какое число — целое в семье ${a}, ${b} и ${c}?`, strat:'«Сложение и вычитание помогают проверять друг друга».', split:`${c} − ${sub}: из целого убираем часть ${sub}. Какая часть останется?` });
+    return { id:++TASK_ID, type:'family', kind:'number', key:'family', tech:'F', answer:ans,
+      view:{ ask:`Мы знаем: ${a} + ${b} = ${c}. Найди ответ, не считая заново!`, expr:[c,'−',sub,'=',SLOT], family:{ whole:c, parts:[a,b], unknown:null }, showFamily:true, label:'Семья чисел' },
+      strategies:[st].concat(Solver.strategies(c,'-',sub)), hints:hintsOf(st), line:{ start:c, jumps:[{from:c,to:ans,label:'−'+sub}] }, sig:'F'+c+'-'+sub };
+  },
+  whichWorks(level){
+    const op = chance(.5) ? '+' : '-';
+    const p = Gen.pair(op, 3, { bKind: chance(.7)?'two':'one', test:(a,b)=> b>=8 && b%10>=8 && (op==='+' ? a+M.up10(b)<=100 && a>=5 : a>=M.up10(b) && a-M.up10(b)-(M.up10(b)-b)>=0) });
+    const a = p[0], b = p[1], B = M.up10(b), e = B - b, mid = M.apply(a,op,B), r = M.apply(a,op,b);
+    if (b%10 < 8 || (op==='+' ? a+B>100 : a<B)) return this.arith(a,op,b,{ tech:'G' });
+    const add = op === '+';
+    const good = add ? `${a} + ${B} = ${mid}, потом ${mid} − ${e} = ${r}` : `${a} − ${B} = ${mid}, потом ${mid} + ${e} = ${r}`;
+    const wrongSign = add ? `${a} + ${B} = ${mid}, потом ${mid} + ${e} = ${mid+e}` : `${a} − ${B} = ${mid}, потом ${mid} − ${e} = ${mid-e}`;
+    const wrongAmt = add ? `${a} + ${B} = ${mid}, потом ${mid} − ${e+1} = ${mid-e-1}` : `${a} − ${B} = ${mid}, потом ${mid} + ${e+1} = ${mid+e+1}`;
+    let opts = [good];
+    if (M.inRange(add ? mid+e : mid-e)) opts.push(wrongSign);
+    if (M.inRange(add ? mid-e-1 : mid+e+1)) opts.push(wrongAmt);
+    if (opts.length < 2) return this.arith(a,op,b,{ tech:'G' });
+    opts = shuffle(opts);
+    const strategies = Solver.prefer(Solver.strategies(a,op,b), 'G');
+    return choiceTask({ type:'which', key:'compens', tech:'G',
+      view:{ ask:`Какое решение примера ${M.expr(a,op,b)} верное? Здесь работает компенсация.`, label:'Компенсация' },
+      options:opts.map(x=>({text:x})), answer:opts.indexOf(good), strategies,
+      hints:[ `Мы ${add?'прибавили':'отняли'} ${B} вместо ${b}. Это больше или меньше, чем нужно?`, '«Сделай число удобным, а потом верни лишнее».',
+              add ? `Мы прибавили лишние ${e} — их нужно отнять.` : `Мы отняли лишние ${e} — их нужно вернуть, то есть прибавить.` ],
+      line:lineOf(strategies[0],a,op,b), sig:'W'+a+op+b, a, op, b });
+  },
+  doubles(){
+    const m = rnd(6, 45), d = pick([0,1,1,2]);
+    const a = chance(.5) ? m : m + d, b = a === m ? m + d : m;
+    return this.arith(a,'+',b,{ tech:'I', key:'doubles', ask:'Числа почти близнецы. Посчитай:' });
+  }
+};
+
+/* Режимы, генерирующие задания по навыкам */
+function R(fn){ const t = fn(); if (t) t.remake = fn; return t; }
+const TECH_MAKERS = {
+  A: lvl => R(() => { const op = chance(.5)?'+':'-'; const p = Gen.pair(op, Math.max(2,lvl), { cross:true, bKind:'one' }); return Tasks.arith(p[0],op,p[1],{ tech:'A' }); }),
+  B: lvl => chance(.3) ? R(() => Tasks.decompose(lvl)) : R(() => { const op = chance(.5)?'+':'-'; const p = Gen.pair(op, 3, { cross:false, bKind:'two' }); return Tasks.arith(p[0],op,p[1],{ tech:'B' }); }),
+  C: lvl => R(() => { const op = chance(.5)?'+':'-'; const p = Gen.pair(op, 3, { bKind:'two' }); return Tasks.arith(p[0],op,p[1],{ tech:'C' }); }),
+  D: lvl => chance(.5)
+    ? R(() => { const a = rnd(1,9); return Tasks.missingFrom(a,'+',10-a,'a+x',{ tech:'D', key:'round', ask:'Найди друга до десяти:' }); })
+    : R(() => { let a = rnd(11,89); if (a%10===0) a++; return Tasks.arith(a,'+',10-a%10,{ tech:'D', key:'round', ask:'Дополни до круглого числа:' }); }),
+  E: lvl => chance(.5)
+    ? R(() => { let b = rnd(11,89); if (b%10===0) b++; return Tasks.arith(100,'-',b,{ tech:'E', key:'hundred' }); })
+    : R(() => { let a = rnd(11,89); if (a%10===0) a++; return Tasks.missingFrom(a,'+',100-a,'a+x',{ tech:'E', key:'hundred', ask:'Сколько не хватает до 100?' }); }),
+  F: lvl => chance(.6) ? R(() => Tasks.family(lvl)) : R(() => Tasks.missing(Math.max(2,lvl))),
+  G: lvl => chance(.6)
+    ? R(() => { const op = chance(.5)?'+':'-'; const p = Gen.pair(op, 3, { bKind: chance(.6)?'two':'one', test:(a,b)=> b>=8 && b%10>=8 && (op==='+' ? a+M.up10(b)<=100 : a>=M.up10(b)) }); return Tasks.arith(p[0],op,p[1],{ tech:'G', key:'compens' }); })
+    : R(() => Tasks.whichWorks(lvl)),
+  H: lvl => R(() => Tasks.verify(lvl)),
+  I: lvl => R(() => Tasks.doubles())
+};
+
+const MODES = {
+  lightning: { title:'Молниеносный счёт', world:'Лес десятков', icon:'⚡', len:10,
+    make(ctx){
+      if (!ctx.free && ctx.level === 4 && ctx.opMode === 'mix' && chance(.12)) return R(() => Tasks.edge());
+      if (!ctx.free && ctx.level === 4 && ctx.opMode === 'mix' && chance(.15)) return R(() => Tasks.chain(4));
+      const opSel = ctx.opSel; const free = ctx.free;
+      return R(() => { const op = opSel(); const o = {}; if (free && free.cross !== 'any') o.cross = free.cross === 'yes'; const p = Gen.pair(op, ctx.level, o); return Tasks.arith(p[0],op,p[1]); });
+    } },
+  bridge: { title:'Мост через десяток', world:'Мост через десяток', icon:'🌉', len:8,
+    make(ctx){
+      const lvl = ctx.level, opSel = ctx.opSel;
+      if (lvl >= 3 && chance(.2)) return R(() => Tasks.chooseRound(lvl));
+      return R(() => { const op = opSel(); const o = { cross:true, bKind: lvl <= 2 ? 'one' : (chance(.6)?'two':'one') };
+        if (lvl === 1) { o.aMin = 11; o.aMax = 48; o.maxRes = 60; }
+        const p = Gen.pair(op, Math.max(2,lvl), o); return Tasks.arith(p[0],op,p[1],{ tech:'A', bridgeVis:true, ask:'Перейди через мостик к десятку:' }); });
+    } },
+  round: { title:'Магия круглых чисел', world:'Город круглых чисел', icon:'🏙️', len:8,
+    make(ctx){
+      const lvl = ctx.level;
+      const vars = ['toTen','dropUnits','addTens','subTens'].concat(lvl >= 2 ? ['toHundred','fromHundred','toTen'] : [], lvl >= 3 ? ['roundHelp','chooseRound','missingRound'] : []);
+      const v = pick(vars);
+      if (v === 'toTen') return R(() => { let a = rnd(lvl===1?11:12, lvl===1?48:89); if (a%10===0) a++; return Tasks.arith(a,'+',10-a%10,{ key:'round', ask:'Дополни до круглого числа:' }); });
+      if (v === 'dropUnits') return R(() => { let a = rnd(12, lvl===1?49:99); if (a%10===0) a++; return Tasks.arith(a,'-',a%10,{ key:'round', ask:'Получи круглое число:' }); });
+      if (v === 'addTens') return R(() => { const a = rnd(1, lvl===1?39:79); const b = rnd(1, Math.max(1, Math.floor((Math.min(lvl===1?50:100) - a)/10)))*10; return Tasks.arith(a,'+',b,{ key:'round' }); });
+      if (v === 'subTens') return R(() => { const a = rnd(20, lvl===1?50:100); const b = rnd(1, Math.floor(a/10))*10; return Tasks.arith(a,'-',b,{ key:'round' }); });
+      if (v === 'toHundred') return R(() => { let a = rnd(11,89); if (a%10===0) a++; return Tasks.arith(a,'+',100-a,{ key:'hundred', tech:'A', ask:'Дополни до сотни:' }); });
+      if (v === 'fromHundred') return R(() => { let b = rnd(11,89); if (b%10===0) b++; return Tasks.arith(100,'-',b,{ key:'hundred', tech:'E' }); });
+      if (v === 'roundHelp') return R(() => { const p = Gen.pair('+', 3, { cross:true, bKind:'two' }); return Tasks.arith(p[0],'+',p[1],{ tech:'A', ask:'Используй круглое число как ступеньку:' }); });
+      if (v === 'chooseRound') return R(() => Tasks.chooseRound(lvl));
+      return R(() => { let a = rnd(11,89); if (a%10===0) a++; const to100 = chance(.4); const b = to100 ? 100-a : 10-a%10; return Tasks.missingFrom(a,'+',b,'a+x',{ key: to100?'hundred':'round', tech: to100?'E':'D', ask: to100?'Сколько не хватает до 100?':'Сколько не хватает до круглого числа?' }); });
+    } },
+  detectives: { title:'Числовые детективы', world:'Пещера тайных чисел', icon:'🔮', len:8,
+    make(ctx){ const lvl = ctx.level; return chance(lvl >= 3 ? .2 : 0) ? R(() => Tasks.family(lvl)) : R(() => Tasks.missing(lvl)); } },
+  constructor: { title:'Математический конструктор', world:'Мастерская волшебника', icon:'🧩', len:8,
+    make(ctx){
+      const lvl = ctx.level;
+      const list = ['build','decompose','order','error','chooseRound'].concat(lvl >= 3 ? ['which','family'] : []);
+      const v = list[(ctx.index + rnd(0, list.length-1)) % list.length];
+      if (v === 'build') return R(() => { const op = ctx.opSel(); const p = Gen.pair(op, Math.max(2,lvl), { cross: lvl >= 2 ? true : false, bKind:'two' }); return Tasks.arith(p[0],op,p[1],{ guided:true, ask:'Собери решение из удобных частей, а потом впиши ответ:', label:'Собери решение' }); });
+      if (v === 'decompose') return R(() => Tasks.decompose(lvl));
+      if (v === 'order') return R(() => Tasks.order(lvl));
+      if (v === 'error') return R(() => Tasks.error(lvl));
+      if (v === 'chooseRound') return R(() => Tasks.chooseRound(lvl));
+      if (v === 'which') return R(() => Tasks.whichWorks(lvl));
+      return R(() => Tasks.family(lvl));
+    } },
+  dragon: { title:'Битва с математическим драконом', world:'Башня испытаний', icon:'🐉', len:14,
+    make(ctx){
+      const lvl = ctx.level, opSel = ctx.opSel;
+      const pool = [
+        () => R(() => { const op = opSel(); const p = Gen.pair(op, lvl); return Tasks.arith(p[0],op,p[1]); }),
+        () => R(() => { const op = opSel(); const p = Gen.pair(op, Math.max(2,lvl), { cross:true, bKind: lvl>=3?'two':'one' }); return Tasks.arith(p[0],op,p[1]); }),
+        () => R(() => Tasks.missing(lvl))
+      ];
+      if (lvl >= 2) pool.push(() => R(() => Tasks.chooseRound(lvl)), () => R(() => Tasks.decompose(lvl)));
+      if (lvl >= 3) pool.push(() => R(() => Tasks.verify(lvl)), () => R(() => Tasks.order(lvl)), () => R(() => Tasks.family(lvl)));
+      if (lvl >= 4) pool.push(() => R(() => Tasks.chain(lvl)), () => R(() => Tasks.error(lvl)), () => R(() => Tasks.whichWorks(lvl)));
+      return pick(pool)();
+    } },
+  tech: { title:'Тренировка приёма', world:'Книга приёмов', icon:'📘', len:6,
+    make(ctx){ const m = TECH_MAKERS[ctx.tech] || TECH_MAKERS.A; return m(ctx.level); } }
+};
+
+const KEY_INFO = {
+  add_nocross:    { label:'Сложение без перехода через десяток', train:['lightning',{ free:{ op:'add', cross:'no' } }] },
+  add_cross:      { label:'Сложение с переходом через десяток', train:['bridge',{ op:'add' }] },
+  sub_nocross:    { label:'Вычитание без перехода через десяток', train:['lightning',{ free:{ op:'sub', cross:'no' } }] },
+  sub_cross:      { label:'Вычитание с переходом через десяток', train:['bridge',{ op:'sub' }] },
+  round:          { label:'Вычисления с круглыми числами', train:['round',{}] },
+  hundred:        { label:'Дополнение до 100', train:['tech',{ tech:'E' }] },
+  edge:           { label:'Примеры с 0 и 100', train:['lightning',{}] },
+  missing_add:    { label:'Неизвестное слагаемое', train:['detectives',{}] },
+  missing_sub:    { label:'Неизвестное вычитаемое', train:['detectives',{}] },
+  missing_minuend:{ label:'Неизвестное уменьшаемое', train:['detectives',{}] },
+  decompose:      { label:'Десятки и единицы', train:['tech',{ tech:'B' }] },
+  choose_round:   { label:'Выбор удобного круглого числа', train:['tech',{ tech:'A' }] },
+  order:          { label:'Порядок шагов решения', train:['constructor',{}] },
+  error:          { label:'Поиск ошибок в решении', train:['constructor',{}] },
+  verify:         { label:'Проверка обратным действием', train:['tech',{ tech:'H' }] },
+  family:         { label:'Семья обратных действий', train:['tech',{ tech:'F' }] },
+  compens:        { label:'Компенсация', train:['tech',{ tech:'G' }] },
+  chain:          { label:'Вычисления в несколько шагов', train:['dragon',{}] },
+  doubles:        { label:'Удвоение близких чисел', train:['tech',{ tech:'I' }] }
+};
+
+/* =====================================================================
+   5. ПРИЁМЫ (мнемоника)
+   ===================================================================== */
+const TECHS = {
+  A:{ name:'Мостик к десятку', icon:'🌉', mn:'Сначала до круглого, потом остаток',
+      explain:'Круглые числа — как островки: к ним легко прыгать и от них легко считать. Сначала допрыгни до ближайшего круглого числа, а потом добавь то, что осталось.',
+      why:'Мы не меняем число 5 — мы просто разрезали его на две части: 2 и 3. Когда прибавляем обе части, прибавляем всё число целиком.',
+      ex:[38,'+',5], ex2:[53,'-',6] },
+  B:{ name:'Числовой разрез', icon:'✂️', mn:'Большое число делим на десятки и единицы',
+      explain:'Любое двузначное число состоит из десятков и единиц. Разрежь его и прибавляй по частям: сначала десятки, потом единицы.',
+      why:'22 — это 2 десятка и 2 единицы. Если прибавить и десятки, и единицы, мы прибавим всё число 22.',
+      ex:[34,'+',22] },
+  C:{ name:'Умный прыжок', icon:'🦘', mn:'Десятки — большой прыжок, единицы — маленький',
+      explain:'Представь числовую прямую. Десятки — большие прыжки, единицы — маленькие шажки. При вычитании прыгаем назад.',
+      why:'Прыжок на 20 и прыжок на 3 вместе — это ровно прыжок на 23. Порядок не важен, но с десятками считать проще.',
+      ex:[42,'+',23], ex2:[65,'-',23] },
+  D:{ name:'Дружба до десяти', icon:'🤝', mn:'Найди пару, которая вместе даёт 10',
+      explain:'Некоторые числа дружат: вместе они дают ровно 10. Это пары 1 и 9, 2 и 8, 3 и 7, 4 и 6, 5 и 5. Зная их, легко дойти до круглого числа.',
+      why:'8 + 2 = 10, поэтому 38 + 2 = 40: восемь единиц и ещё две собираются в новый целый десяток.',
+      ex:[46,'+',4] },
+  E:{ name:'Волшебная сотня', icon:'💯', mn:'До 100 считаем, сколько не хватает',
+      explain:'Чтобы найти 100 − 63, представь шкалу. Прыгай от 63 вперёд: сначала до круглого 70, потом десятками до 100. Сложи прыжки.',
+      why:'Вычитание показывает расстояние между числами. Расстояние от 63 до 100 можно пройти двумя прыжками: 7 и 30.',
+      ex:[100,'-',63] },
+  F:{ name:'Семья обратных действий', icon:'👨‍👩‍👧', mn:'Сложение и вычитание помогают проверять друг друга',
+      explain:'Три числа бывают одной семьёй: целое и две части. Если знаешь один пример, ты сразу знаешь ещё три!',
+      why:'Сложение соединяет части в целое. Вычитание убирает из целого одну часть — и остаётся другая.',
+      ex:null },
+  G:{ name:'Компенсация', icon:'⚖️', mn:'Сделай число удобным, а потом верни лишнее',
+      explain:'Если число почти круглое (19, 29, 38…), сделай его круглым, посчитай, а потом исправь то, что изменил.',
+      why:'Если одному слагаемому дать 1, а у другого забрать 1, сумма не изменится. А если вычли на 1 больше, ответ стал на 1 меньше — значит, этот 1 нужно вернуть.',
+      ex:[39,'+',16], ex2:[52,'-',19] },
+  H:{ name:'Проверка следопыта', icon:'🔎', mn:'Проверь обратным действием',
+      explain:'Любой ответ можно проверить. Вычитание проверяем сложением, а сложение — вычитанием. Если вернулись к началу — всё верно!',
+      why:'Если 74 − 28 = 46, то, вернув 28 обратно, мы должны снова получить 74.',
+      ex:null },
+  I:{ name:'Удвоение и половинки', icon:'👯', mn:'Если числа близки, удвой удобное число',
+      explain:'Удваивать легко: 24 + 24 — это 20 + 20 и 4 + 4. Если числа почти одинаковые, удвой меньшее и прибавь разницу.',
+      why:'25 — это 24 и ещё 1. Поэтому 24 + 25 = 24 + 24 + 1.',
+      when:'Удобно, когда числа отличаются на 1 или 2 (24 + 25, 36 + 37). Если числа совсем разные, например 45 + 8, лучше подойдёт мостик к десятку.',
+      ex:[24,'+',25], ex2:[36,'+',37] }
+};
+const TECH_ORDER = ['A','B','C','D','E','F','G','H','I'];
+
+/* =====================================================================
+   6. ЗВУК (Web Audio, без файлов)
+   ===================================================================== */
+const Sound = {
+  ctx: null,
+  ensure(){
+    if (!this.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; try { this.ctx = new C(); } catch(e){ return null; } }
+    if (this.ctx.state === 'suspended') { try { this.ctx.resume(); } catch(e){} }
+    return this.ctx;
+  },
+  tone(f, t0, d, type, v){
+    const c = this.ctx, o = c.createOscillator(), g = c.createGain(), t = c.currentTime + t0;
+    o.type = type || 'sine'; o.frequency.setValueAtTime(f, t);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v || .12, t + .02); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + d + .05);
+  },
+  play(name){
+    if (!App.data || !App.data.settings.sound) return;
+    const c = this.ensure(); if (!c) return;
+    try {
+      if (name === 'tap') this.tone(700,0,.05,'triangle',.04);
+      else if (name === 'ok') { this.tone(660,0,.12,'sine',.14); this.tone(880,.1,.12,'sine',.14); this.tone(1175,.2,.22,'sine',.12); }
+      else if (name === 'oops') { this.tone(392,0,.14,'sine',.08); this.tone(330,.12,.2,'sine',.07); }
+      else if (name === 'hint') { this.tone(988,0,.1,'triangle',.07); this.tone(1319,.08,.16,'triangle',.06); }
+      else if (name === 'gem') [1047,1319,1568,2093].forEach((f,i)=>this.tone(f,i*.06,.14,'triangle',.07));
+      else if (name === 'win') [523,659,784,1047,784,1047,1319].forEach((f,i)=>this.tone(f,i*.12,.26,'triangle',.11));
+      else if (name === 'level') [587,740,880,1175].forEach((f,i)=>this.tone(f,i*.09,.2,'sine',.1));
+      else if (name === 'hit') { this.tone(196,0,.18,'triangle',.1); this.tone(147,.1,.25,'triangle',.08); }
+    } catch(e){}
+  }
+};
+
+/* =====================================================================
+   7. НАГРАДЫ, СТАТИСТИКА, АДАПТАЦИЯ
+   ===================================================================== */
+const cntC = (d,k) => (d.stats.byType[k] ? d.stats.byType[k].c : 0);
+const BADGES = [
+  { id:'first',    icon:'🌟', name:'Первый шаг',          desc:'Реши первое задание',                      test:d=>d.stats.correct>=1 },
+  { id:'streak5',  icon:'🔥', name:'Пять подряд',         desc:'5 верных ответов подряд с первой попытки', test:d=>d.stats.bestStreak>=5 },
+  { id:'streak10', icon:'⚡', name:'Десять подряд',       desc:'10 верных ответов подряд',                 test:d=>d.stats.bestStreak>=10 },
+  { id:'self',     icon:'🦊', name:'Сам с усами',         desc:'15 заданий сам, без подсказок',            test:d=>d.stats.selfSolved>=15 },
+  { id:'persist',  icon:'💪', name:'Настойчивость',       desc:'5 раз найди ответ после ошибки',           test:d=>d.stats.persist>=5 },
+  { id:'curious',  icon:'💡', name:'Любознательный',      desc:'3 раза разбери решение по шагам',          test:d=>d.stats.fullHints>=3 },
+  { id:'bridge',   icon:'🌉', name:'Строитель мостов',    desc:'10 примеров с переходом через десяток',     test:d=>cntC(d,'add_cross')+cntC(d,'sub_cross')>=10 },
+  { id:'round',    icon:'🏙️', name:'Друг круглых чисел',  desc:'10 примеров с круглыми числами',            test:d=>cntC(d,'round')+cntC(d,'hundred')>=10 },
+  { id:'detective',icon:'🔍', name:'Числовой детектив',   desc:'Найди 10 спрятанных чисел',                 test:d=>cntC(d,'missing_add')+cntC(d,'missing_sub')+cntC(d,'missing_minuend')>=10 },
+  { id:'builder',  icon:'🧩', name:'Конструктор',         desc:'8 заданий в Мастерской',                    test:d=>['order','error','decompose','choose_round','compens'].reduce((p,k)=>p+cntC(d,k),0)>=8 },
+  { id:'checker',  icon:'🔎', name:'Следопыт',            desc:'5 проверок обратным действием',             test:d=>cntC(d,'verify')+cntC(d,'family')>=5 },
+  { id:'tech3',    icon:'📘', name:'Знаток приёмов',      desc:'Освой 3 приёма',                           test:d=>d.learned.length>=3 },
+  { id:'techAll',  icon:'📚', name:'Хранитель книги',     desc:'Освой все 9 приёмов',                      test:d=>d.learned.length>=9 },
+  { id:'pairs',    icon:'🤝', name:'Мастер пар',          desc:'Собери все пары в игре «Дружба»',          test:d=>d.stats.pairsGames>=1 },
+  { id:'solved50', icon:'🎒', name:'Путешественник',      desc:'Реши 50 заданий',                          test:d=>d.stats.correct>=50 },
+  { id:'solved150',icon:'🗺️', name:'Великий странник',   desc:'Реши 150 заданий',                         test:d=>d.stats.correct>=150 },
+  { id:'dragon',   icon:'🐉', name:'Укротитель дракона',  desc:'Победи математического дракона',           test:d=>d.stats.dragonWins>=1 }
+];
+const Badges = {
+  check(){
+    const d = App.data, got = [];
+    BADGES.forEach(b => { if (d.badges.indexOf(b.id) < 0 && b.test(d)) { d.badges.push(b.id); got.push(b); } });
+    got.forEach(b => Toast.show(b.icon, 'Новый значок: ' + b.name, b.desc));
+    if (got.length) Sound.play('win');
+    return got;
+  }
+};
+const Adapt = {
+  score(r){ if (!r.solved) return 0; if (r.firstTry) return r.hints === 0 ? 1 : Math.max(.4, 1 - .2*r.hints); return r.hints >= 3 ? .2 : .4; },
+  push(r){
+    const d = App.data; if (!d.settings.autoLevel) return null;
+    d.adapt.push(this.score(r)); if (d.adapt.length > 8) d.adapt.shift();
+    const lvl = d.settings.level, w = d.adapt;
+    const avg = k => w.slice(-k).reduce((p,c)=>p+c,0)/k;
+    if (w.length >= 5 && avg(5) >= .85 && lvl < 4) { d.settings.level = lvl + 1; d.adapt = []; return 'up'; }
+    if (w.length >= 4 && avg(4) <= .35 && lvl > 1) { d.settings.level = lvl - 1; d.adapt = []; return 'down'; }
+    return null;
+  }
+};
+const Stats = {
+  rec(key){ const bt = App.data.stats.byType; if (!bt[key]) bt[key] = { n:0, c:0, first:0, hinted:0 }; return bt[key]; },
+  wrongAttempt(){ App.data.stats.streak = 0; save(); },
+  hintUsed(full){ App.data.stats.hints++; if (full) App.data.stats.fullHints++; save(); },
+  complete(task, res){
+    const d = App.data, st = d.stats, tr = this.rec(task.key);
+    st.solved++; tr.n++;
+    let gained = 0;
+    if (res.solved) {
+      st.correct++; tr.c++;
+      if (res.firstTry) { st.firstTry++; tr.first++; st.streak++; if (st.streak > st.bestStreak) st.bestStreak = st.streak; }
+      if (res.hints > 0) tr.hinted++;
+      if (res.firstTry && res.hints === 0) { gained = 2; st.selfSolved++; } else gained = 1;
+      if (!res.firstTry) st.persist++;
+    } else st.streak = 0;
+    st.crystals += gained;
+    let learned = null;
+    if (res.solved && task.tech) learned = this.techCredit(task.tech, res.firstTry ? 1 : .5);
+    const change = Adapt.push(res);
+    const badges = Badges.check();
+    save();
+    return { gained, learned, change, badges };
+  },
+  techCredit(t, amount){
+    const d = App.data, r = d.tech[t] || (d.tech[t] = { score:0 });
+    r.score += amount;
+    if (r.score >= 3 && d.learned.indexOf(t) < 0) {
+      d.learned.push(t); d.learnedLog.unshift({ t, at:Date.now() }); d.learnedLog = d.learnedLog.slice(0,12);
+      d.stats.crystals += 3;
+      Toast.show(TECHS[t].icon, 'Приём освоен: «' + TECHS[t].name + '»', '+3 кристалла за новую стратегию!');
+      return t;
+    }
+    return null;
+  },
+  accuracy(){ const st = App.data.stats; return st.solved ? Math.round(st.firstTry / st.solved * 100) : null; },
+  entries(){ return Object.keys(App.data.stats.byType).filter(k => KEY_INFO[k]).map(k => { const r = App.data.stats.byType[k]; return { key:k, n:r.n, ratio:r.n ? r.first/r.n : 0, r }; }); },
+  strengths(){ return this.entries().filter(e => e.n >= 3 && e.ratio >= .8).sort((a,b)=>b.ratio-a.ratio || b.n-a.n); },
+  troubles(){ return this.entries().filter(e => e.n >= 3 && e.ratio < .7).sort((a,b)=>a.ratio-b.ratio); }
+};
+
+/* =====================================================================
+   8. ИНТЕРФЕЙС: общие компоненты
+   ===================================================================== */
+const FOX_SVG = '<svg viewBox="0 0 120 120" aria-hidden="true">'
+ + '<defs><linearGradient id="foxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffa45e"/><stop offset="1" stop-color="#ff7a3d"/></linearGradient></defs>'
+ + '<path class="fox-tail" d="M80 96 C112 94 118 62 101 50 C104 72 94 82 76 84 Z" fill="url(#foxg)"/>'
+ + '<path d="M101 50 C110 56 110 66 105 71 C104 62 102 56 101 50Z" fill="#fff4ea"/>'
+ + '<ellipse cx="60" cy="92" rx="25" ry="20" fill="url(#foxg)"/><ellipse cx="60" cy="98" rx="13" ry="12" fill="#fff4ea"/>'
+ + '<path d="M28 42 L34 10 L52 31 Z" fill="#ff8a45"/><path d="M34 34 L36 18 L46 30Z" fill="#5a3a5e"/>'
+ + '<path d="M92 42 L86 10 L68 31 Z" fill="#ff8a45"/><path d="M86 34 L84 18 L74 30Z" fill="#5a3a5e"/>'
+ + '<path d="M22 46 C22 26 98 26 98 46 C98 64 78 78 60 80 C42 78 22 64 22 46Z" fill="url(#foxg)"/>'
+ + '<path d="M33 55 C44 57 52 63 60 79 C68 63 76 57 87 55 C85 70 73 80 60 81 C47 80 35 70 33 55Z" fill="#fff4ea"/>'
+ + '<ellipse cx="45" cy="50" rx="4.8" ry="5.8" fill="#2b2140"/><ellipse cx="75" cy="50" rx="4.8" ry="5.8" fill="#2b2140"/>'
+ + '<circle cx="46.6" cy="47.8" r="1.7" fill="#fff"/><circle cx="76.6" cy="47.8" r="1.7" fill="#fff"/>'
+ + '<circle cx="36" cy="60" r="4" fill="#ff9ab0" opacity=".6"/><circle cx="84" cy="60" r="4" fill="#ff9ab0" opacity=".6"/>'
+ + '<ellipse cx="60" cy="66" rx="4.2" ry="3.2" fill="#2b2140"/><path d="M53 70 Q60 76 67 70" stroke="#2b2140" stroke-width="2.2" fill="none" stroke-linecap="round"/>'
+ + '<path class="fox-star" d="M60 7 L62.6 13.4 L69.5 14 L64.2 18.3 L65.9 25 L60 21.4 L54.1 25 L55.8 18.3 L50.5 14 L57.4 13.4Z" fill="#ffc23d" stroke="#fff" stroke-width="1.2"/>'
+ + '</svg>';
+const DRAGON_SVG = '<svg viewBox="0 0 140 120" aria-hidden="true">'
+ + '<path d="M30 70 C10 60 6 36 18 26 C22 44 34 50 44 52Z" fill="#b59bff"/><path d="M110 70 C130 60 134 36 122 26 C118 44 106 50 96 52Z" fill="#b59bff"/>'
+ + '<path d="M96 96 C120 104 132 92 128 80 C122 90 110 92 98 86Z" fill="#7a5ae6"/>'
+ + '<ellipse cx="70" cy="84" rx="32" ry="26" fill="#8b6cf0"/><ellipse cx="70" cy="90" rx="18" ry="16" fill="#e7ddff"/>'
+ + '<path d="M50 30 L46 12 L58 24Z" fill="#ffc23d"/><path d="M90 30 L94 12 L82 24Z" fill="#ffc23d"/>'
+ + '<ellipse cx="70" cy="44" rx="30" ry="24" fill="#8b6cf0"/>'
+ + '<ellipse cx="58" cy="42" rx="6" ry="7" fill="#fff"/><ellipse cx="82" cy="42" rx="6" ry="7" fill="#fff"/>'
+ + '<circle cx="59" cy="43" r="3.4" fill="#2b2140"/><circle cx="83" cy="43" r="3.4" fill="#2b2140"/>'
+ + '<ellipse cx="70" cy="56" rx="12" ry="7" fill="#a68cff"/><circle cx="66" cy="55" r="1.6" fill="#4b2fa3"/><circle cx="74" cy="55" r="1.6" fill="#4b2fa3"/>'
+ + '<path d="M62 62 Q70 66 78 62" stroke="#4b2fa3" stroke-width="2" fill="none" stroke-linecap="round"/>'
+ + '<circle cx="50" cy="52" r="3.5" fill="#ff9ab0" opacity=".6"/><circle cx="90" cy="52" r="3.5" fill="#ff9ab0" opacity=".6"/>'
+ + '</svg>';
+
+function makeFox(size){
+  const svgWrap = el('div', { class:'fox ' + (size||''), html:FOX_SVG });
+  const text = el('span', { class:'txt' });
+  const bubble = el('div', { class:'bubble', 'aria-live':'polite' }, el('span', { class:'who' }, 'Искрик'), text);
+  let tm = null;
+  return { fox: svgWrap, bubble,
+    say(msg, mood){
+      text.textContent = msg;
+      bubble.classList.remove('fresh'); void bubble.offsetWidth; bubble.classList.add('fresh');
+      svgWrap.classList.remove('happy','think'); void svgWrap.offsetWidth;
+      if (mood) svgWrap.classList.add(mood);
+      clearTimeout(tm); tm = setTimeout(() => svgWrap.classList.remove('happy','think'), 1400);
+    } };
+}
+const PHRASES = {
+  hello:['Привет! Я Искрик, волшебный лисёнок. Отправимся в страну чисел?','С возвращением! Числа уже соскучились по тебе.','Готов к приключению? Я буду рядом и подскажу, если что.'],
+  task:['Подумай спокойно — время у нас есть.','Попробуй найти удобный путь!','Если хочешь, открой числовую прямую — она помогает.','Давай разложим число на удобные кусочки!','Попробуй сначала добраться до ближайшего десятка.','Ты справишься — я в тебя верю!'],
+  ok:['Отлично! Ты нашёл верный путь!','Ура! Ты нашёл короткий путь к ответу!','Здорово! Кристалл твой!','Точно! Ты считаешь как настоящий волшебник!','Вот это да! Так держать!'],
+  okAfter:['Здорово, что ты не сдался! Настойчивость — это суперсила.','Получилось! Ошибки помогают нам учиться.','Ты нашёл ошибку и исправил её — это очень круто!'],
+  okHint:['Теперь ты знаешь ещё один способ считать!','Подсказка помогла, а ответ ты нашёл сам!','Здорово, что ты разобрался!'],
+  try1:['Интересная попытка! Давай проверим один шаг.','Не страшно! Ошибки помогают нам учиться.','Хм, давай пересчитаем ещё разок.','Здорово, что ты попробовал сам! Попробуй ещё.'],
+  try2:['Давай пройдём путь вместе — шаг за шагом.','Посмотри на шаги решения — я всё разложил по полочкам.'],
+  hint:['Сейчас подскажу!','Лови подсказку!','Вот небольшая подсказка.']
+};
+
+const Toast = {
+  show(icon, title, sub){
+    const box = $('#toasts'); if (!box) return;
+    const t = el('div', { class:'toast' }, el('span', { class:'ic' }, icon), el('div', null, title, sub ? el('small', null, sub) : null));
+    box.appendChild(t);
+    setTimeout(() => { t.style.transition = 'opacity .4s'; t.style.opacity = '0'; setTimeout(() => t.remove(), 450); }, 3200);
+  }
+};
+const Fx = {
+  gems(fromEl, n){
+    const fx = $('#fx'), target = $('#crystalCount'); if (!fx || !target || !n || !fromEl || !fromEl.getBoundingClientRect) return;
+    const a = fromEl.getBoundingClientRect(), b = target.getBoundingClientRect();
+    for (let i = 0; i < Math.min(n,4); i++) {
+      const g = el('span', { class:'gem' }, '💎'); fx.appendChild(g);
+      const x0 = a.left + a.width/2 - 14 + (i*18-9), y0 = a.top + 10;
+      g.style.left = x0 + 'px'; g.style.top = y0 + 'px';
+      const dx = b.left - x0, dy = b.top - y0;
+      if (g.animate) { const an = g.animate([{ transform:'translate(0,0) scale(1)', opacity:1 },{ transform:`translate(${dx*.4}px,${dy*.4-60}px) scale(1.3)`, opacity:1 },{ transform:`translate(${dx}px,${dy}px) scale(.6)`, opacity:.2 }], { duration:900+i*120, easing:'ease-in-out' }); an.onfinish = () => g.remove(); }
+      else setTimeout(() => g.remove(), 900);
+    }
+    setTimeout(() => Sound.play('gem'), 500);
+  },
+  confetti(){
+    const fx = $('#fx'); if (!fx) return;
+    const colors = ['#2ec4b6','#4aa8f0','#9b7cf6','#ff7b6b','#ffc23d'];
+    for (let i = 0; i < 70; i++) {
+      const c = el('span', { class:'conf' }); c.style.left = (Math.random()*100) + 'vw'; c.style.background = pick(colors); fx.appendChild(c);
+      if (c.animate) { const an = c.animate([{ transform:'translateY(0) rotate(0)' },{ transform:`translateY(${window.innerHeight+60}px) rotate(${rnd(200,720)}deg)` }], { duration:rnd(1600,3000), delay:rnd(0,500), easing:'cubic-bezier(.2,.6,.4,1)' }); an.onfinish = () => c.remove(); }
+      else setTimeout(() => c.remove(), 2500);
+    }
+  }
+};
+const Modal = {
+  open(title, body, actions){
+    const root = $('#modalRoot'); clear(root);
+    const prev = document.activeElement;
+    const close = () => { clear(root); document.removeEventListener('keydown', esc); if (prev && prev.focus) try { prev.focus(); } catch(e){} };
+    const esc = e => { if (e.key === 'Escape') close(); };
+    const btns = (actions || [{ text:'Закрыть', cls:'btn-soft' }]).map(a => el('button', { class:'btn ' + (a.cls||'btn-soft'), type:'button', onclick:onTap(() => { if (a.keep) { a.on && a.on(close); return; } close(); a.on && a.on(); }) }, a.text));
+    const box = el('div', { class:'modal', role:'dialog', 'aria-modal':'true', 'aria-label':title }, el('h2', null, title), body, el('div', { class:'btn-row' }, btns));
+    const back = el('div', { class:'modal-back', onclick:e => { if (e.target === back) close(); } }, box);
+    root.appendChild(back); document.addEventListener('keydown', esc);
+    setTimeout(() => { const f = box.querySelector('button, input, select'); if (f) f.focus(); }, 30);
+    return close;
+  },
+  isOpen(){ return !!$('#modalRoot').firstChild; }
+};
+
+/* ---- Числовая прямая (SVG из чисел) ---- */
+let SVG_UID = 0;
+function numberLineSVG(o){
+  const lo = o.lo, hi = o.hi, span = Math.max(1, hi - lo), W = 1000, P = 40, Y = o.baseY || 120, H = Y + 112;
+  const X = v => P + (v - lo) / span * (W - 2*P);
+  const id = 'nl' + (++SVG_UID);
+  let g = `<defs><marker id="${id}f" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17a597"/></marker>`
+        + `<marker id="${id}b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f2604f"/></marker></defs>`;
+  if (o.island != null && o.island >= lo && o.island <= hi) g += `<ellipse cx="${X(o.island)}" cy="${Y+6}" rx="34" ry="14" fill="#c9f2d9"/><text x="${X(o.island)}" y="${Y-26}" font-size="34" text-anchor="middle">🏝️</text>`;
+  g += `<line x1="${P-16}" y1="${Y}" x2="${W-P+16}" y2="${Y}" stroke="#93a0c2" stroke-width="5" stroke-linecap="round"/>`;
+  for (let v = lo; v <= hi; v++) {
+    const x = X(v), major = v % 10 === 0, mid = v % 5 === 0, len = major ? 18 : mid ? 12 : 7;
+    g += `<line x1="${x}" y1="${Y-len}" x2="${x}" y2="${Y+len}" stroke="${major?'#64719a':'#b4bdd5'}" stroke-width="${major?3:1.6}"/>`;
+  }
+  const special = new Set(); (o.jumps||[]).forEach(j => { special.add(j.from); special.add(j.to); }); if (o.pos != null) special.add(o.pos);
+  const every = span <= 12 ? 1 : span <= 24 ? 2 : span <= 40 ? 5 : 10;
+  const labels = [];
+  for (let v = lo; v <= hi; v++) if (v % every === 0 || special.has(v)) labels.push(v);
+  const rows = [-1e9,-1e9,-1e9], minGap = 54;
+  labels.forEach(v => {
+    const x = X(v), sp = special.has(v);
+    let row = 0; while (row < 2 && x - rows[row] < minGap) row++;
+    if (x - rows[row] < minGap && !sp) return;
+    rows[row] = x;
+    const y = Y + 46 + row*30;
+    if (row > 0) g += `<line x1="${x}" y1="${Y+20}" x2="${x}" y2="${y-22}" stroke="#d3d9ea" stroke-width="1.5" stroke-dasharray="3 3"/>`;
+    g += `<text x="${x}" y="${y}" font-size="${sp?28:24}" font-weight="${sp?800:600}" text-anchor="middle" fill="${sp?'#243150':'#7d88a5'}" font-family="Trebuchet MS, sans-serif">${v}</text>`;
+  });
+  (o.jumps||[]).forEach(j => {
+    const x1 = X(j.from), x2 = X(j.to), fwd = j.to >= j.from, mx = (x1+x2)/2;
+    const h = clamp(16 + Math.abs(x2-x1)*.32, 24, Y - 34);
+    const col = fwd ? '#17a597' : '#f2604f';
+    g += `<path d="M${x1} ${Y-8} Q${mx} ${Y-8-2*h} ${x2} ${Y-8}" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round" marker-end="url(#${id}${fwd?'f':'b'})"/>`;
+    const lw = 18 + String(j.label).length*15;
+    g += `<rect x="${mx-lw/2}" y="${Y-8-h-30}" width="${lw}" height="34" rx="17" fill="#fff" stroke="${col}" stroke-width="3"/>`;
+    g += `<text x="${mx}" y="${Y-8-h-6}" font-size="24" font-weight="800" text-anchor="middle" fill="${col}" font-family="Trebuchet MS, sans-serif">${String(j.label).replace('−','&#8722;')}</text>`;
+  });
+  if (o.pos != null && o.pos >= lo && o.pos <= hi) g += `<circle cx="${X(o.pos)}" cy="${Y}" r="13" fill="#ff7b6b" stroke="#fff" stroke-width="4"/>`;
+  return `<svg class="nl-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Числовая прямая от ${lo} до ${hi}">${g}</svg>`;
+}
+function rangeFor(jumps, extra){
+  const vals = []; jumps.forEach(j => { vals.push(j.from, j.to); }); if (extra != null) vals.push(extra);
+  if (!vals.length) return { lo:0, hi:100 };
+  let lo = M.down10(Math.min.apply(null, vals)), hi = M.up10(Math.max.apply(null, vals));
+  if (hi === lo) hi = lo + 10;
+  if (hi - lo < 10) hi = lo + 10;
+  if (hi > 100) { hi = 100; lo = Math.min(lo, 90); }
+  return { lo: clamp(lo,0,100), hi: clamp(hi,0,100) };
+}
+
+/* ---- Блоки десятков и единиц ---- */
+function rods(n, cls){ const out = []; for (let i = 0; i < n; i++) { const r = el('div', { class:'rod ' + (cls||'') }); for (let k = 0; k < 10; k++) r.appendChild(el('i')); out.push(r); } return out; }
+function cubes(n, cls, extra){ const c = el('div', { class:'cubes' }); for (let i = 0; i < n; i++) c.appendChild(el('i', { class:'cube ' + (cls||'') })); (extra||[]).forEach(x => c.appendChild(x)); return c; }
+function blocksOf(n, cls){ return el('div', { class:'blocks', 'aria-label':`${Math.floor(n/10)} дес. ${n%10} ед.` }, rods(Math.floor(n/10), cls), n%10 ? cubes(n%10, cls === 'lav' ? 'lav' : cls === 'coral' ? 'coral' : '') : null); }
+function tenFrame(a, b){ const f = el('div', { class:'frame', 'aria-label':`${a} и ${b}` }); for (let i = 0; i < 10; i++) f.appendChild(el('i', { class: i < a ? 'a' : (i < a+b ? 'b' : '') })); return f; }
+
+/* Визуализация «мостика»: блоки + десятка-рамка */
+function bridgeVisual(t){
+  const a = t.a, b = t.b, add = t.op === '+';
+  const wrap = el('div', { class:'visual' });
+  if (add) {
+    const ua = a%10, need = ua ? 10 - ua : 0;
+    const frame = el('div', { class:'frame' });
+    for (let i = 0; i < 10; i++) frame.appendChild(el('i', { class: i < ua ? 'b' : '' , style: i >= ua ? 'box-shadow:inset 0 0 0 2px #ffc23d' : null }));
+    const bU = b%10, bT = b - bU;
+    const bCubes = el('div', { class:'cubes' });
+    for (let i = 0; i < bU; i++) bCubes.appendChild(el('i', { class:'cube ' + (i < need ? 'sun' : 'coral') }));
+    wrap.appendChild(el('div', { class:'vis-row' },
+      el('div', null, el('div', { class:'blocks' }, rods(Math.floor(a/10)), frame), el('div', { class:'vis-cap' }, `${a}: в десятке-рамке пустых мест — ${need}`)),
+      el('div', { class:'vis-op' }, '+'),
+      el('div', null, el('div', { class:'blocks' }, rods(bT/10, 'coral'), bCubes), el('div', { class:'vis-cap' }, `${b}: жёлтые кубики заполнят десяток`))
+    ));
+  } else {
+    const ua = a%10;
+    const c = el('div', { class:'cubes' });
+    for (let i = 0; i < ua; i++) c.appendChild(el('i', { class:'cube out' }));
+    wrap.appendChild(el('div', { class:'vis-row' },
+      el('div', null, el('div', { class:'blocks' }, rods(Math.floor(a/10)), ua ? c : null), el('div', { class:'vis-cap' }, ua ? `${a}: сначала уберём ${ua} ${plural(ua,'единицу','единицы','единиц')} — получится ${a-ua}` : `${a}: разменяем один десяток`)),
+      el('div', { class:'vis-op' }, '−'),
+      el('div', null, el('div', { class:'big-num', style:'color:#ff7b6b' }, String(b)), el('div', { class:'vis-cap' }, `столько нужно убрать`))
+    ));
+  }
+  return wrap;
+}
+
+/* ---- Семья чисел: треугольник ---- */
+function familySVG(f){
+  const w = f.unknown === 'whole' ? '?' : f.whole;
+  const p0 = f.unknown === 0 ? '?' : f.parts[0], p1 = f.unknown === 1 ? '?' : f.parts[1];
+  const node = (x,y,v,c) => `<circle cx="${x}" cy="${y}" r="30" fill="${v==='?'?'#ffe7e2':c}" stroke="#fff" stroke-width="4"/><text x="${x}" y="${y+10}" font-size="28" font-weight="800" text-anchor="middle" fill="${v==='?'?'#e85a4a':'#243150'}" font-family="Trebuchet MS, sans-serif">${v}</text>`;
+  return `<svg viewBox="0 0 220 170" role="img" aria-label="Семья чисел: целое и две части"><path d="M110 40 L45 130 L175 130 Z" fill="#efe9ff" stroke="#c9b8ff" stroke-width="4" stroke-linejoin="round"/>`
+    + `<text x="110" y="112" font-size="13" font-weight="800" text-anchor="middle" fill="#7458e0" font-family="Trebuchet MS, sans-serif">целое = часть + часть</text>`
+    + node(110,38,w,'#fff3cf') + node(45,130,p0,'#d6f6f1') + node(175,130,p1,'#dcefff') + '</svg>';
+}
+
+/* =====================================================================
+   9. ИНСТРУМЕНТЫ ОБУЧЕНИЯ
+   ===================================================================== */
+function NumberLineTool(root, task){
+  const start = (task && task.line && M.inRange(task.line.start)) ? task.line.start : 0;
+  const st = { lo:0, hi:100, pos:start, user:[], sol:false, zoom:false };
+  const svgBox = el('div'), note = el('div', { class:'tool-note' });
+  const btnSol = el('button', { class:'mini', type:'button', 'aria-pressed':'false', onclick:onTap(() => { st.sol = !st.sol; btnSol.setAttribute('aria-pressed', String(st.sol)); if (st.sol) fitTo(task.line.jumps); draw(); }, 250) }, '✨ Прыжки решения');
+  function fitTo(jumps){ const r = rangeFor(jumps, st.pos); st.lo = r.lo; st.hi = r.hi; st.zoom = st.hi - st.lo < 100; }
+  function center(){ if (!st.zoom) return; if (st.pos < st.lo || st.pos > st.hi) { st.lo = clamp(M.down10(st.pos) - 10, 0, 80); st.hi = st.lo + 20; } }
+  function move(d){ const to = clamp(st.pos + d, 0, 100); if (to === st.pos) { note.textContent = 'Дальше прыгать нельзя: наша прямая от 0 до 100.'; return; } st.user.push({ from:st.pos, to, label:(d>0?'+':'−')+Math.abs(d) }); if (st.user.length > 6) st.user.shift(); st.pos = to; center(); draw(); }
+  function draw(){
+    const jumps = (st.sol ? task.line.jumps : []).concat(st.user);
+    svgBox.innerHTML = numberLineSVG({ lo:st.lo, hi:st.hi, jumps, pos:st.pos });
+    if (!note.dataset.keep) note.textContent = `Ты стоишь на числе ${st.pos}. ` + (st.user.length ? `Прыжков: ${st.user.length}.` : 'Нажимай кнопки, чтобы прыгать вперёд и назад.');
+  }
+  root.appendChild(el('div', { class:'tool-head' }, el('h3', null, '📏 Числовая прямая'),
+    el('div', { class:'mini-row' },
+      el('button', { class:'mini', type:'button', onclick:() => { st.lo = 0; st.hi = 100; st.zoom = false; draw(); } }, '0–100'),
+      el('button', { class:'mini', type:'button', onclick:() => { st.zoom = true; st.lo = clamp(M.down10(st.pos) - 10, 0, 80); st.hi = st.lo + 20; draw(); } }, '🔍 Крупнее'),
+      el('button', { class:'mini', type:'button', 'aria-label':'Сдвинуть влево', onclick:() => { if (!st.zoom) return; const w = st.hi - st.lo; st.lo = Math.max(0, st.lo - 10); st.hi = st.lo + w; draw(); } }, '◀'),
+      el('button', { class:'mini', type:'button', 'aria-label':'Сдвинуть вправо', onclick:() => { if (!st.zoom) return; const w = st.hi - st.lo; st.hi = Math.min(100, st.hi + 10); st.lo = st.hi - w; draw(); } }, '▶'))));
+  root.appendChild(svgBox);
+  root.appendChild(el('div', { class:'mini-row', style:'margin-top:8px' },
+    el('button', { class:'mini m', type:'button', onclick:() => move(-10) }, '−10'),
+    el('button', { class:'mini m', type:'button', onclick:() => move(-1) }, '−1'),
+    el('button', { class:'mini p', type:'button', onclick:() => move(1) }, '+1'),
+    el('button', { class:'mini p', type:'button', onclick:() => move(10) }, '+10'),
+    el('button', { class:'mini', type:'button', onclick:() => { st.pos = start; st.user = []; draw(); } }, '↺ Сначала'),
+    task && task.line ? btnSol : null));
+  root.appendChild(note);
+  if (task && task.line && task.line.jumps.length) { const r = rangeFor(task.line.jumps, start); if (r.hi - r.lo <= 30) { st.lo = r.lo; st.hi = r.hi; st.zoom = true; } }
+  draw();
+}
+function TensTool(root, startN){
+  let n = M.inRange(startN) ? startN : 0;
+  const area = el('div', { class:'pv-area' }), tbl = el('div', { class:'pv-table' }), note = el('div', { class:'tool-note' }), big = el('div', { class:'big-num' });
+  function draw(msg){
+    clear(area); clear(tbl);
+    const t = Math.floor(n/10), u = n%10;
+    area.appendChild(el('div', { class:'blocks' }, rods(t)));
+    const uc = el('div', { class:'cubes pv-units' }); for (let i = 0; i < u; i++) uc.appendChild(el('i', { class:'cube' + (i === u-1 && msg === '+1' ? ' pop' : '') }));
+    area.appendChild(uc);
+    tbl.appendChild(el('div', { class:'h1' }, 'Десятки')); tbl.appendChild(el('div', { class:'h2' }, 'Единицы'));
+    tbl.appendChild(el('div', { class:'v' }, String(t))); tbl.appendChild(el('div', { class:'v' }, String(u)));
+    big.textContent = n === 100 ? '100 = 10 десятков' : `${n} = ${t*10} + ${u}`;
+    note.textContent = msg && msg.length > 3 ? msg : `${t} ${plural(t,'десяток','десятка','десятков')} и ${u} ${plural(u,'единица','единицы','единиц')}.`;
+  }
+  function ch(d){
+    const to = n + d;
+    if (to < 0 || to > 100) { draw('В нашей стране числа живут от 0 до 100.'); return; }
+    let msg = d > 0 ? '+1' : '';
+    if (d === 1 && to%10 === 0) msg = '10 единиц собрались в 1 новый десяток!';
+    if (d === -1 && n%10 === 0) msg = 'Разменяли 1 десяток на 10 единиц и убрали одну.';
+    n = to; draw(msg); Sound.play('tap');
+  }
+  root.appendChild(el('div', { class:'tool-head' }, el('h3', null, '🧱 Десятки и единицы'),
+    el('div', { class:'mini-row' },
+      el('button', { class:'mini m', type:'button', onclick:() => ch(-10) }, '−10'), el('button', { class:'mini m', type:'button', onclick:() => ch(-1) }, '−1'),
+      el('button', { class:'mini p', type:'button', onclick:() => ch(1) }, '+1'), el('button', { class:'mini p', type:'button', onclick:() => ch(10) }, '+10'),
+      el('button', { class:'mini', type:'button', onclick:() => { n = M.inRange(startN) ? startN : 0; draw(); } }, '↺'))));
+  root.appendChild(big); root.appendChild(tbl); root.appendChild(area); root.appendChild(note);
+  draw();
+}
+function HundredTool(root, startN){
+  let n = M.inRange(startN) ? startN : 0;
+  const grid = el('div', { class:'hgrid', role:'img' }), note = el('div', { class:'tool-note', style:'text-align:center' }), big = el('div', { class:'big-num' });
+  function draw(){
+    clear(grid);
+    const r = M.up10(n);
+    for (let i = 1; i <= 100; i++) grid.appendChild(el('i', { class: i <= n ? 'f' : (i <= r ? 'n' : 'r') }, i%10 === 0 ? String(i) : ''));
+    grid.setAttribute('aria-label', `Закрашено ${n} клеток из 100`);
+    big.textContent = String(n);
+    note.textContent = n === 100 ? 'Сотня собрана целиком!' : (n%10 === 0 ? `${n} — круглое число. До 100 не хватает ${100-n}.` : `До круглого ${r} не хватает ${r-n}. До 100 не хватает ${100-n}: это ${r-n} и ещё ${100-r}.`);
+  }
+  const ch = d => { n = clamp(n + d, 0, 100); draw(); Sound.play('tap'); };
+  root.appendChild(el('div', { class:'tool-head' }, el('h3', null, '💯 Шкала до 100'),
+    el('div', { class:'mini-row' },
+      el('button', { class:'mini m', type:'button', onclick:() => ch(-10) }, '−10'), el('button', { class:'mini m', type:'button', onclick:() => ch(-1) }, '−1'),
+      el('button', { class:'mini p', type:'button', onclick:() => ch(1) }, '+1'), el('button', { class:'mini p', type:'button', onclick:() => ch(10) }, '+10'),
+      el('button', { class:'mini', type:'button', onclick:() => { n = M.inRange(startN) ? startN : 0; draw(); } }, '↺'))));
+  root.appendChild(big); root.appendChild(grid);
+  root.appendChild(el('div', { class:'legend' }, el('span', { style:'--c:#22b8a9' }, 'число'), el('span', { style:'--c:#ffc23d' }, 'до круглого'), el('span', { style:'--c:#efe9ff' }, 'до 100')));
+  root.appendChild(note);
+  draw();
+}
+/* Пошаговое решение: один шаг за раз, с выбором следующего шага ребёнком */
+function StepViewer(root, strategies, opts){
+  opts = opts || {};
+  const st = { si:0, idx:0, solved:{} };
+  const box = el('div');
+  root.appendChild(el('div', { class:'tool-head' }, el('h3', null, opts.title || '🪜 Пошаговое решение'),
+    opts.onHide ? el('button', { class:'mini', type:'button', onclick:() => opts.onHide() }, 'Скрыть решение ✕') : null));
+  root.appendChild(box);
+  function cur(){ return strategies[st.si]; }
+  function draw(){
+    clear(box);
+    const s = cur(), steps = s.steps;
+    if (strategies.length > 1) {
+      const tabs = el('div', { class:'steps-tabs', role:'group', 'aria-label':'Способы решения' });
+      strategies.forEach((x,i) => tabs.appendChild(el('button', { type:'button', 'aria-pressed':String(i===st.si), onclick:() => { st.si = i; st.idx = 0; st.solved = {}; draw(); } }, `Способ ${i+1}: ${x.name}`)));
+      box.appendChild(tabs);
+      box.appendChild(el('div', { class:'steps-note' }, 'Все способы верные — выбирай тот, что удобнее тебе!'));
+    } else box.appendChild(el('div', { class:'steps-note' }, s.name));
+    if (st.idx > 0) { const prev = el('div', { class:'step-prev' }); steps.slice(0, st.idx).forEach(x => prev.appendChild(el('div', null, x.text))); box.appendChild(prev); }
+    const step = steps[st.idx];
+    const key = st.si + ':' + st.idx;
+    const ask = opts.guided && step.kind === 'calc' && !st.solved[key];
+    const card = el('div', { class:'step-cur', 'aria-live':'polite' }, el('div', { class:'sn' }, `Шаг ${st.idx+1} из ${steps.length}`));
+    if (ask) {
+      card.appendChild(el('div', { class:'st' }, step.q));
+      const q = el('div', { class:'step-q' }, el('div', { class:'ql' }, 'Как думаешь, что получится? Выбери:'));
+      numOptions(step.r, 3).forEach(v => {
+        const b = el('button', { type:'button', onclick:() => {
+          if (v === step.r) { st.solved[key] = true; Sound.play('ok'); draw(); }
+          else { b.classList.add('tried'); b.disabled = true; Sound.play('oops'); hintLine.textContent = 'Почти! Пересчитай ещё раз — можно на числовой прямой.'; }
+        } }, String(v));
+        q.appendChild(b);
+      });
+      q.appendChild(el('button', { type:'button', style:'font-size:14px;min-width:auto;padding:0 12px', onclick:() => { st.solved[key] = true; draw(); } }, 'Показать'));
+      const hintLine = el('div', { class:'stn' });
+      card.appendChild(q); card.appendChild(hintLine);
+    } else {
+      card.appendChild(el('div', { class:'st' + (step.kind === 'info' ? ' info' : '') }, step.text));
+      if (step.note) card.appendChild(el('div', { class:'stn' }, step.note));
+    }
+    box.appendChild(card);
+    const js = steps.slice(0, st.idx + (ask ? 0 : 1)).filter(x => x.kind === 'calc' && x.from != null).map(x => ({ from:x.from, to:x.to, label:x.label }));
+    if (js.length) { const r = rangeFor(js); box.appendChild(el('div', { html:numberLineSVG({ lo:r.lo, hi:r.hi, jumps:js }) })); }
+    const last = st.idx >= steps.length - 1;
+    box.appendChild(el('div', { class:'steps-nav' },
+      el('button', { class:'btn btn-soft btn-sm', type:'button', disabled: st.idx === 0, onclick:() => { st.idx--; draw(); } }, '◀ Предыдущий шаг'),
+      el('button', { class:'btn btn-lav btn-sm', type:'button', disabled: last || ask, onclick:() => { st.idx++; draw(); } }, 'Следующий шаг ▶'),
+      opts.onHide ? el('button', { class:'btn btn-ghost btn-sm', type:'button', onclick:() => opts.onHide() }, 'Скрыть решение') : null));
+    if (last && !ask && opts.onEnd) opts.onEnd();
+  }
+  draw();
+}
+
+/* =====================================================================
+   10. НАВИГАЦИЯ
+   ===================================================================== */
+const UI = {
+  current:null,
+  show(name){
+    if (this.current === 'game' && name !== 'game') Game.stop();
+    document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'scr-' + name));
+    this.current = name;
+    try { window.scrollTo({ top:0, behavior:'smooth' }); } catch(e){ window.scrollTo(0,0); }
+  }
+};
+function goHome(){ UI.show('home'); renderHome(); }
+function updateTop(){
+  $('#crystalCount').textContent = App.data.stats.crystals;
+  const s = $('#btnSound'), on = App.data.settings.sound;
+  s.textContent = on ? '🔊' : '🔇'; s.setAttribute('aria-pressed', String(on)); s.setAttribute('aria-label', on ? 'Звук включён' : 'Звук выключен');
+}
+
+/* =====================================================================
+   11. ГЛАВНЫЙ ЭКРАН
+   ===================================================================== */
+const WORLDS = [
+  { mode:'lightning',  name:'Лес десятков',          icon:'🌲', x:9,  y:66, c:'c1' },
+  { mode:'bridge',     name:'Мост через десяток',    icon:'🌉', x:25, y:24, c:'c2' },
+  { mode:'round',      name:'Город круглых чисел',   icon:'🏙️', x:42, y:64, c:'c3' },
+  { mode:'detectives', name:'Пещера тайных чисел',   icon:'🔮', x:58, y:22, c:'c4' },
+  { mode:'constructor',name:'Мастерская волшебника', icon:'🧩', x:74, y:64, c:'c5' },
+  { mode:'dragon',     name:'Башня испытаний',       icon:'🏰', x:90, y:24, c:'c6' }
+];
+function recommendation(){
+  const tr = Stats.troubles();
+  if (tr.length) { const k = tr[0].key; return { text:`Потренируем «${KEY_INFO[k].label}» — так этот навык станет крепче.`, train:KEY_INFO[k].train }; }
+  const bm = App.data.stats.byMode;
+  const next = WORLDS.find(w => !bm[w.mode]);
+  if (next) return { text:`Загляни в новый мир: «${next.name}»!`, train:[next.mode,{}] };
+  const notLearned = TECH_ORDER.find(t => App.data.learned.indexOf(t) < 0);
+  if (notLearned) return { text:`Освой приём «${TECHS[notLearned].name}» — он сделает счёт быстрее.`, train:['tech',{ tech:notLearned }] };
+  return { text:'Ты знаешь все приёмы! Брось вызов дракону.', train:['dragon',{}] };
+}
+function startTrain(train){ Game.start(train[0], Object.assign({}, train[1] || {}, train[0]==='tech' ? { title:'Приём: ' + TECHS[train[1].tech].name } : {})); }
+
+function renderHome(){
+  const d = App.data, st = d.stats, root = clear($('#scr-home'));
+  const fx = makeFox('lg');
+  const rec = recommendation();
+  root.appendChild(el('div', { class:'card hero' },
+    el('div', { class:'hero-fox' }, fx.fox),
+    el('div', null,
+      el('h1', null, 'Матемагия'),
+      el('div', { class:'sub' }, 'путешествие в страну чисел'),
+      fx.bubble,
+      el('div', { class:'btn-row' },
+        el('button', { class:'btn btn-primary btn-lg', type:'button', onclick:onTap(() => startTrain(rec.train)) }, '▶ Продолжить приключение'),
+        el('button', { class:'btn btn-sun btn-lg', type:'button', onclick:onTap(openFreeTraining) }, '🎯 Свободная тренировка')))));
+  fx.say(st.solved ? pick(PHRASES.hello.slice(1)) + ' ' + rec.text : PHRASES.hello[0] + ' Начни с любого мира на карте — все дорожки открыты!');
+
+  root.appendChild(el('h2', { class:'section-title' }, '🗺️ Карта волшебных миров'));
+  const map = el('div', { class:'map' });
+  const pts = WORLDS.map(w => `${w.x},${w.y*0.6}`).join(' ');
+  map.appendChild(el('div', { html:`<svg class="map-path" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="1.6" stroke-dasharray="2 2" stroke-linecap="round" stroke-linejoin="round"/></svg>` }).firstChild);
+  WORLDS.forEach(w => {
+    const m = MODES[w.mode], plays = st.byMode[w.mode] || 0;
+    map.appendChild(el('button', { class:'island ' + w.c + (rec.train[0] === w.mode ? ' recommended' : ''), type:'button', style:`left:${w.x}%;top:${w.y}%`, 'aria-label':`${w.name}: ${m.title}`, onclick:onTap(() => Game.start(w.mode, {})) },
+      el('span', { class:'disc' }, w.icon),
+      el('span', { class:'txt' }, el('span', { class:'nm' }, w.name), el('span', { class:'md' }, m.title + (plays ? ` · ${plays} ${plural(plays,'поход','похода','походов')}` : '')))));
+  });
+  root.appendChild(map);
+
+  root.appendChild(el('div', { class:'quick-links' },
+    el('button', { class:'quick', type:'button', onclick:onTap(() => { UI.show('library'); renderLibrary(); }) }, el('span', { class:'qi', style:'background:var(--lav-l)' }, '📚'), el('span', null, el('b', null, 'Книга приёмов'), el('span', null, 'Мнемоники и секреты быстрого счёта'))),
+    el('button', { class:'quick', type:'button', onclick:onTap(() => { UI.show('progress'); renderProgress(); }) }, el('span', { class:'qi', style:'background:var(--sky-l)' }, '📊'), el('span', null, el('b', null, 'Мой прогресс'), el('span', null, 'Что получается и что потренировать'))),
+    el('button', { class:'quick', type:'button', onclick:onTap(() => { UI.show('pairs'); Pairs.start(10); }) }, el('span', { class:'qi', style:'background:var(--teal-l)' }, '🤝'), el('span', null, el('b', null, 'Игра «Дружба до десяти»'), el('span', null, 'Собери пары чисел')))));
+
+  const acc = Stats.accuracy();
+  const grid = el('div', { class:'home-grid' });
+  grid.appendChild(el('div', { class:'card' }, el('h3', null, '🎒 Мой рюкзак путешественника'),
+    el('div', { class:'metrics' },
+      metric('m1', st.solved, 'Решено заданий'),
+      metric('m2', st.streak, `Верно подряд (рекорд ${st.bestStreak})`),
+      metric('m3', acc == null ? '—' : acc + '%', 'Точность с первой попытки'),
+      metric('m4', `${d.learned.length}/9`, 'Изученные приёмы'),
+      metric('m5', '💎 ' + st.crystals, 'Кристаллы знаний'))));
+  grid.appendChild(settingsCard());
+  root.appendChild(grid);
+  root.appendChild(el('div', { class:'footer-note' }, Store.available ? 'Прогресс сохраняется на этом устройстве автоматически.' : 'Сохранение недоступно в этом браузере — прогресс будет жить до закрытия вкладки.'));
+}
+function metric(c, v, l){ return el('div', { class:'metric ' + c }, el('div', { class:'v' }, String(v)), el('div', { class:'l' }, l)); }
+function settingsCard(){
+  const d = App.data;
+  const card = el('div', { class:'card' }, el('h3', null, '⚙️ Сложность и настройки'));
+  const lv = el('div', { class:'levels', role:'group', 'aria-label':'Уровень сложности' });
+  [1,2,3,4].forEach(n => lv.appendChild(el('button', { class:'level-btn', type:'button', 'aria-pressed':String(d.settings.level===n), onclick:() => { d.settings.level = n; d.adapt = []; save(); renderHome(); } },
+    el('b', null, `${LEVELS[n].icon} ${LEVELS[n].name}`), el('span', null, LEVELS[n].desc))));
+  card.appendChild(lv);
+  const auto = el('input', { type:'checkbox' }); auto.checked = d.settings.autoLevel;
+  auto.addEventListener('change', () => { d.settings.autoLevel = auto.checked; save(); });
+  const seg = el('div', { class:'seg', role:'group', 'aria-label':'Какие действия тренировать' });
+  [['add','＋ Сложение'],['sub','− Вычитание'],['mix','± Всё вместе']].forEach(p => seg.appendChild(el('button', { type:'button', 'aria-pressed':String(d.settings.op===p[0]), onclick:() => { d.settings.op = p[0]; save(); renderHome(); } }, p[1])));
+  card.appendChild(el('div', { class:'row-set' }, el('label', { class:'switch' }, auto, 'Подстраивать сложность автоматически')));
+  card.appendChild(el('div', { class:'row-set' }, seg));
+  card.appendChild(el('div', { class:'row-set' },
+    el('button', { class:'btn btn-soft btn-sm', type:'button', onclick:() => { toggleSound(); renderHome(); } }, d.settings.sound ? '🔊 Звук включён' : '🔇 Звук выключен'),
+    el('button', { class:'btn btn-ghost btn-sm', type:'button', onclick:confirmReset }, '🗑️ Сбросить прогресс')));
+  return card;
+}
+function toggleSound(){ App.data.settings.sound = !App.data.settings.sound; save(); updateTop(); if (App.data.settings.sound) Sound.play('tap'); }
+function confirmReset(){
+  Modal.open('Сбросить весь прогресс?', el('p', { class:'explain' }, 'Кристаллы, значки, освоенные приёмы и статистика будут удалены. Это нельзя отменить.'),
+    [{ text:'Отмена', cls:'btn-soft' }, { text:'Да, начать заново', cls:'btn-coral', on:() => { const snd = App.data.settings.sound; Store.reset(); App.data = defaultData(); App.data.settings.sound = snd; save(); updateTop(); goHome(); Toast.show('🌱', 'Прогресс сброшен', 'Новое приключение начинается!'); } }]);
+}
+function openFreeTraining(){
+  const f = { op: App.data.settings.op, cross:'any', timed:false };
+  const segOf = (label, key, items) => {
+    const seg = el('div', { class:'seg', role:'group', 'aria-label':label });
+    const draw = () => { clear(seg); items.forEach(p => seg.appendChild(el('button', { type:'button', 'aria-pressed':String(f[key]===p[0]), onclick:() => { f[key] = p[0]; draw(); } }, p[1]))); };
+    draw(); return el('div', { class:'field' }, el('div', { class:'lbl' }, label), seg);
+  };
+  const timed = el('input', { type:'checkbox' }); timed.addEventListener('change', () => { f.timed = timed.checked; });
+  const body = el('div', null,
+    el('p', { class:'explain', style:'margin:0' }, 'Выбери, что хочешь потренировать. Никакой спешки — считаем в своём темпе.'),
+    segOf('Действие', 'op', [['add','＋ Сложение'],['sub','− Вычитание'],['mix','± Всё вместе']]),
+    segOf('Переход через десяток', 'cross', [['no','Без перехода'],['yes','С переходом'],['any','Любые']]),
+    el('div', { class:'field' }, el('label', { class:'switch' }, timed, '⏱ Испытание на время (по желанию, 90 секунд)')));
+  Modal.open('🎯 Свободная тренировка', body, [{ text:'Отмена', cls:'btn-soft' }, { text:'Начать!', cls:'btn-primary', on:() => Game.start('lightning', { free:{ op:f.op, cross:f.cross }, timed:f.timed, title: f.timed ? 'Испытание на время' : 'Свободная тренировка' }) }]);
+}
+
+/* =====================================================================
+   12. ИГРОВОЙ ПРОЦЕСС
+   ===================================================================== */
+const TIMED_SECONDS = 90;
+const Game = {
+  s:null, ui:null,
+  start(mode, opts){
+    opts = opts || {};
+    this.stop();
+    const def = MODES[mode]; if (!def) return;
+    const s = this.s = { mode, opts, def, index:0, total: opts.timed ? Infinity : (opts.len || def.len), task:null,
+      attempts:0, hintLevel:0, done:false, results:[], crystals:0, skills:new Set(), newBadges:[], learned:[],
+      recent:[], lastTpl:null, similar:null, timer:null, timeLeft:0, tool:null, lastAct:0, orderSeq:[] };
+    if (mode === 'dragon') s.dragon = { max:8, power:8 };
+    App.data.lastMode = mode; save();
+    UI.show('game');
+    this.buildShell();
+    if (opts.timed) { s.timeLeft = TIMED_SECONDS; s.timer = setInterval(() => this.tick(), 1000); }
+    const intro = { lightning:'Считаем в уме! Не спеши: важна точность, а не скорость.', bridge:'На этом мосту главное — сначала дойти до круглого числа.',
+      round:'В Городе круглых чисел всё считается легко. Ищи круглые ступеньки!', detectives:'В пещере спрятались числа. Найдём их с помощью обратных действий!',
+      constructor:'В Мастерской собираем решения из удобных частей.', dragon:'Дракон охраняет башню. Каждый верный ответ забирает у него волшебную звёздочку!',
+      tech:'Потренируем приём! Если что — подсказки рядом.' }[mode];
+    this.ui.fox.say(intro, 'happy');
+    this.next(true);
+  },
+  stop(){ if (this.s && this.s.timer) clearInterval(this.s.timer); this.s = null; },
+  ctx(){
+    const s = this.s, d = App.data;
+    const opPref = (s.opts.free && s.opts.free.op) || s.opts.op || d.settings.op;
+    return { level:d.settings.level, free:s.opts.free || null, tech:s.opts.tech || null, index:s.index, opMode:opPref,
+      opSel: () => opPref === 'add' ? '+' : opPref === 'sub' ? '-' : (chance(.5) ? '+' : '-') };
+  },
+  blocked(){ const now = Date.now(); if (now - this.s.lastAct < 300) return true; this.s.lastAct = now; return false; },
+  tick(){
+    const s = this.s; if (!s) return;
+    s.timeLeft--; this.updateHead();
+    if (s.timeLeft <= 0) { clearInterval(s.timer); s.timer = null; this.finish(); }
+  },
+
+  buildShell(){
+    const s = this.s, root = clear($('#scr-game')), u = this.ui = {};
+    const lvlSel = el('select', { class:'lvl-select', 'aria-label':'Уровень сложности' });
+    [1,2,3,4].forEach(n => { const o = el('option', { value:String(n) }, `${LEVELS[n].icon} ${LEVELS[n].name}`); if (App.data.settings.level === n) o.selected = true; lvlSel.appendChild(o); });
+    lvlSel.addEventListener('change', () => { App.data.settings.level = +lvlSel.value; App.data.adapt = []; save(); Toast.show(LEVELS[+lvlSel.value].icon, 'Уровень: ' + LEVELS[+lvlSel.value].name, 'Следующие задания будут на этом уровне.'); });
+    u.lvlSel = lvlSel;
+    root.appendChild(el('div', { class:'game-head' },
+      el('button', { class:'btn btn-soft btn-sm', type:'button', onclick:onTap(goHome) }, '🏠', el('span', { class:'hide-xs' }, ' На главную')),
+      el('div', { class:'game-title' }, el('span', { class:'gt-icon', 'aria-hidden':'true' }, s.def.icon),
+        el('div', null, el('div', { class:'gt-world' }, s.def.world), el('div', { class:'gt-name' }, s.opts.title || s.def.title))),
+      lvlSel));
+    u.dots = el('div', { class:'dots', 'aria-hidden':'true' });
+    u.count = el('div', { style:'font-weight:800;color:var(--ink2)' });
+    u.timer = s.opts.timed ? el('div', { class:'timer', role:'progressbar', 'aria-label':'Оставшееся время' }, el('i', { style:'width:100%' })) : null;
+    root.appendChild(el('div', { class:'progress-row' }, u.count, u.dots, u.timer));
+    u.fox = makeFox('');
+    const side = el('aside', { class:'side' + (s.dragon ? ' has-dragon' : '') }, u.fox.fox, u.fox.bubble);
+    if (s.dragon) {
+      u.orbs = el('div', { class:'orbs', 'aria-hidden':'true' });
+      u.dragonLbl = el('div', { class:'dl' });
+      u.dragon = el('div', { class:'dragon-box' }, el('div', { html:DRAGON_SVG }).firstChild, el('div', null, u.orbs, u.dragonLbl));
+      side.appendChild(u.dragon);
+    }
+    u.card = el('div', { class:'card task-card' });
+    u.toolPanel = el('div', { class:'tool-panel', hidden:true });
+    root.appendChild(el('div', { class:'game-grid' }, side, el('div', null, u.card, u.toolPanel)));
+  },
+  updateHead(){
+    const s = this.s, u = this.ui; if (!s) return;
+    clear(u.dots);
+    if (s.total !== Infinity) {
+      for (let i = 0; i < s.total; i++) { const r = s.results[i]; u.dots.appendChild(el('i', { class: r ? (!r.solved ? 'shown' : (r.firstTry && !r.hints ? 'ok' : 'help')) : (i === s.index-1 ? 'cur' : '') })); }
+      u.count.textContent = s.dragon ? `Испытание ${s.index}` : `Задание ${s.index} из ${s.total}`;
+    } else u.count.textContent = `Решено: ${s.results.filter(r=>r.solved).length} · ⏱ ${Math.max(0,s.timeLeft)} с`;
+    if (u.timer) u.timer.firstChild.style.width = (Math.max(0, s.timeLeft) / TIMED_SECONDS * 100) + '%';
+    if (s.dragon) {
+      clear(u.orbs); for (let i = 0; i < s.dragon.max; i++) u.orbs.appendChild(el('i', { class: i < s.dragon.power ? '' : 'gone' }));
+      u.dragonLbl.textContent = s.dragon.power > 0 ? `Волшебная сила дракона: ${s.dragon.power} из ${s.dragon.max}` : 'Дракон без сил!';
+    }
+    if (u.lvlSel && +u.lvlSel.value !== App.data.settings.level) u.lvlSel.value = String(App.data.settings.level);
+  },
+  makeTask(){
+    const s = this.s; let t = null;
+    for (let i = 0; i < 14; i++) {
+      let c = null;
+      try { c = s.similar ? s.similar() : s.def.make(this.ctx()); } catch(e){ c = null; }
+      if (!c) continue;
+      if (s.similar && !c.remake) c.remake = s.similar;
+      t = c;
+      const tpl = c.type + ':' + c.key;
+      if (s.recent.indexOf(c.sig) < 0 && (i > 7 || tpl !== s.lastTpl || s.similar || s.mode === 'lightning' || s.mode === 'bridge' || s.mode === 'tech')) break;
+    }
+    if (!t) { const p = Gen.pair('+', 1, {}); t = Tasks.arith(p[0], '+', p[1]); t.remake = () => { const q = Gen.pair('+',1,{}); return Tasks.arith(q[0],'+',q[1]); }; }
+    s.similar = null;
+    s.recent.push(t.sig); if (s.recent.length > 10) s.recent.shift();
+    s.lastTpl = t.type + ':' + t.key;
+    return t;
+  },
+  next(first){
+    const s = this.s; if (!s) return;
+    if (!first && (!s.done || this.blocked())) return;
+    if (s.index >= s.total || (s.dragon && s.dragon.power <= 0)) { this.finish(); return; }
+    s.task = this.makeTask(); s.index++;
+    this.renderTask();
+  },
+
+  renderTask(){
+    const s = this.s, t = s.task, u = this.ui;
+    s.attempts = 0; s.hintLevel = 0; s.done = false; s.orderSeq = []; s.tool = null;
+    u.toolPanel.hidden = true; clear(u.toolPanel);
+    const card = clear(u.card);
+    card.classList.remove('enter'); void card.offsetWidth; card.classList.add('enter');
+    if (t.view.label) card.appendChild(el('div', { class:'task-type' }, t.view.label));
+    card.appendChild(el('div', { class:'task-ask' }, t.view.ask));
+    u.input = null; u.slot = null; u.choiceBtns = [];
+    if (t.view.big && !t.view.expr) card.appendChild(el('div', { class:'expr' }, el('span', { class:'num' }, t.view.big)));
+    if (t.view.big && t.view.expr) card.appendChild(el('div', { class:'big-num', style:'font-size:56px;color:var(--lav-d)' }, t.view.big));
+    if (t.view.expr) card.appendChild(this.renderExpr(t));
+    u.visual = el('div', { class:'visual' });
+    card.appendChild(u.visual);
+    if (t.view.showFamily) u.visual.appendChild(el('div', { class:'family', html:familySVG(t.view.family) }));
+    if (t.bridgeVis) u.visual.appendChild(bridgeVisual(t));
+    if (t.type === 'error') {
+      const list = el('div', { class:'sol-list' });
+      let ci = 0;
+      t.view.solution.forEach(l => {
+        if (!l.calc) { list.appendChild(el('div', { class:'sol-line' }, l.text)); return; }
+        const i = ci++;
+        const b = el('button', { class:'sol-line pick', type:'button', onclick:onTap(() => this.choose(i, b), 250) }, '👉 ' + l.text);
+        u.choiceBtns.push(b); list.appendChild(b);
+      });
+      list.appendChild(el('div', { class:'sol-line ans' }, t.view.finalLine));
+      u.visual.appendChild(list);
+      u.visual.appendChild(el('div', { class:'drop-hint' }, 'Нажми на строчку, в которой ошибка.'));
+    }
+    const zone = el('div', { class:'answer-zone' });
+    card.appendChild(zone);
+    if (t.kind === 'number') {
+      if (t.cards) {
+        const cardsRow = el('div', { class:'num-cards', role:'group', 'aria-label':'Карточки с числами' });
+        t.cards.forEach(v => {
+          const c = el('button', { class:'num-card', type:'button', draggable:'true', 'aria-label':`Положить число ${v}`, onclick:onTap(() => { if (s.done) return; u.input.value = String(v); u.input.focus(); Sound.play('tap'); }, 200) }, String(v));
+          c.addEventListener('dragstart', e => { try { e.dataTransfer.setData('text/plain', String(v)); } catch(err){} });
+          cardsRow.appendChild(c);
+        });
+        zone.appendChild(cardsRow);
+        zone.appendChild(el('div', { class:'drop-hint' }, 'Перетащи карточку в окошко, нажми на неё или впиши число сам.'));
+      }
+      zone.appendChild(this.keypad());
+    } else if (t.kind === 'choice' && t.type !== 'error') {
+      const ch = el('div', { class:'choices', role:'group', 'aria-label':'Варианты ответа' });
+      t.options.forEach((o,i) => { const b = el('button', { class:'choice', type:'button', onclick:onTap(() => this.choose(i, b), 250) }, el('span', { class:'kbd', 'aria-hidden':'true' }, (i+1) + '.'), o.text); u.choiceBtns.push(b); ch.appendChild(b); });
+      zone.appendChild(ch);
+    } else if (t.kind === 'order') {
+      zone.appendChild(this.renderOrder());
+    }
+    const actions = el('div', { class:'actions' });
+    if (t.kind === 'number' || t.kind === 'order') { u.checkBtn = el('button', { class:'btn btn-primary', type:'button', onclick:onTap(() => this.submit()) }, '✔ Проверить'); actions.appendChild(u.checkBtn); }
+    else u.checkBtn = null;
+    u.hintBtn = el('button', { class:'btn btn-sun', type:'button', onclick:onTap(() => this.hint()) }, '💡 Подсказка');
+    actions.appendChild(u.hintBtn);
+    if (t.bridgeVis || t.guided) actions.appendChild(el('button', { class:'btn btn-lav', type:'button', onclick:onTap(() => this.openTool('steps', { guided:true })) }, '🧩 Решать по шагам'));
+    card.appendChild(actions);
+    u.hintBox = el('div', { 'aria-live':'polite' }); card.appendChild(u.hintBox);
+    u.feedback = el('div', { class:'feedback', 'aria-live':'polite' }); card.appendChild(u.feedback);
+    const tb = el('div', { class:'tool-bar', role:'group', 'aria-label':'Инструменты' });
+    u.toolBtns = {};
+    [['line','📏 Прямая'],['tens','🧱 Десятки'],['hundred','💯 Шкала'],['steps','🪜 Шаги']].forEach(p => { const b = el('button', { class:'tool-btn', type:'button', 'aria-pressed':'false', onclick:onTap(() => this.openTool(p[0]), 250) }, p[1]); u.toolBtns[p[0]] = b; tb.appendChild(b); });
+    card.appendChild(tb);
+    this.updateHead();
+    if (s.index > 1 || !s.opts) u.fox.say(pick(PHRASES.task));
+    if (t.guided) this.openTool('steps', { guided:true });
+    if (u.input) setTimeout(() => { if (u.input && !s.done) try { u.input.focus({ preventScroll:true }); } catch(e){ u.input.focus(); } }, 60);
+  },
+  renderExpr(t){
+    const s = this.s, u = this.ui, row = el('div', { class:'expr' });
+    t.view.expr.forEach(p => {
+      if (p === SLOT) {
+        const inp = el('input', { class:'ans-input', type:'text', inputmode: COARSE ? 'none' : 'numeric', autocomplete:'off', autocorrect:'off', spellcheck:'false', maxlength:'3', 'aria-label':'Твой ответ', enterkeyhint:'done' });
+        inp.addEventListener('input', () => { let v = inp.value.replace(/\D/g,'').slice(0,3); if (v.length > 1) v = String(parseInt(v,10)); if (+v > 100) v = v.slice(0,2); inp.value = v; inp.classList.remove('try'); });
+        inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); if (s.done) this.next(); else this.submit(); } });
+        const slot = el('span', { class:'slot' }, inp);
+        slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
+        slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+        slot.addEventListener('drop', e => { e.preventDefault(); slot.classList.remove('drag-over'); if (s.done) return; let v = ''; try { v = e.dataTransfer.getData('text/plain'); } catch(err){} v = String(v).replace(/\D/g,'').slice(0,3); if (v !== '' && +v <= 100) { inp.value = v; inp.focus(); } });
+        u.input = inp; u.slot = slot; row.appendChild(slot);
+      } else {
+        const str = String(p);
+        const cls = (str === '+' || str === '−') ? 'op' : str === '=' ? 'eq' : str === '?' ? 'q' : 'num';
+        row.appendChild(el('span', { class:cls }, str));
+      }
+    });
+    return row;
+  },
+  keypad(){
+    const kp = el('div', { class:'keypad', role:'group', 'aria-label':'Цифровая клавиатура' });
+    ['1','2','3','4','5','6','7','8','9','⌫','0','✔'].forEach(k => {
+      const cls = k === '⌫' ? 'k-del' : k === '✔' ? 'k-ok' : '';
+      kp.appendChild(el('button', { class:cls, type:'button', 'aria-label': k === '⌫' ? 'Стереть' : k === '✔' ? 'Проверить' : k, onclick:() => this.key(k) }, k));
+    });
+    return kp;
+  },
+  key(k){
+    const s = this.s, u = this.ui; if (!s || !u.input) return;
+    if (k === '✔') { if (s.done) this.next(); else this.submit(); return; }
+    if (s.done) return;
+    Sound.play('tap');
+    let v = u.input.value;
+    if (k === '⌫') v = v.slice(0,-1);
+    else { v = (v === '0' ? '' : v) + k; if (v.length > 3 || +v > 100) { this.ui.fox.say('В нашей стране числа живут от 0 до 100.', 'think'); return; } }
+    u.input.value = v; u.input.classList.remove('try');
+    if (!COARSE) try { u.input.focus({ preventScroll:true }); } catch(e){}
+  },
+  renderOrder(){
+    const s = this.s, t = s.task;
+    const pool = el('div', { class:'order-list', role:'group', 'aria-label':'Шаги для выбора' });
+    const seq = el('div', { class:'order-list', role:'group', 'aria-label':'Твой порядок' });
+    const draw = () => {
+      clear(pool); clear(seq);
+      t.shown.forEach(idx => {
+        if (s.orderSeq.indexOf(idx) >= 0) return;
+        pool.appendChild(el('button', { class:'order-item', type:'button', onclick:() => { if (s.done) return; s.orderSeq.push(idx); Sound.play('tap'); draw(); } }, el('span', { class:'n' }, '+'), t.items[idx]));
+      });
+      s.orderSeq.forEach((idx, pos) => seq.appendChild(el('button', { class:'order-item placed', type:'button', 'aria-label':`Шаг ${pos+1}: ${t.items[idx]}. Нажми, чтобы убрать`, onclick:() => { if (s.done) return; s.orderSeq.splice(pos,1); draw(); } }, el('span', { class:'n' }, String(pos+1)), t.items[idx])));
+      if (!s.orderSeq.length) seq.appendChild(el('div', { class:'drop-hint', style:'padding:10px' }, 'Нажимай на шаги слева по порядку.'));
+    };
+    this.redrawOrder = draw;
+    draw();
+    return el('div', { class:'order-wrap' }, el('div', { class:'order-col' }, el('h4', null, 'Шаги'), pool), el('div', { class:'order-col' }, el('h4', null, 'Твоё решение'), seq));
+  },
+
+  submit(){
+    const s = this.s; if (!s || s.done) return;
+    const t = s.task, u = this.ui;
+    if (t.kind === 'number') {
+      const v = u.input.value;
+      if (v === '' || !/^\d+$/.test(v)) { u.fox.say('Сначала напиши ответ — я подожду 🙂', 'think'); u.input.classList.remove('try'); void u.input.offsetWidth; u.input.classList.add('try'); u.input.focus(); return; }
+      if (this.blocked()) return;
+      const n = parseInt(v, 10);
+      this.judge(n === t.answer, n);
+    } else if (t.kind === 'order') {
+      if (s.orderSeq.length < t.items.length) { u.fox.say('Расставь все шаги, а потом проверим!', 'think'); return; }
+      if (this.blocked()) return;
+      this.judge(s.orderSeq.every((v,i) => v === i), s.orderSeq.slice());
+    }
+  },
+  choose(i, btn){
+    const s = this.s; if (!s || s.done) return;
+    const ok = i === s.task.answer;
+    if (ok) btn.classList.add('right'); else { btn.classList.add('tried'); btn.disabled = true; }
+    this.judge(ok, i);
+  },
+  judge(ok, val){
+    const s = this.s, t = s.task, u = this.ui;
+    if (ok) {
+      s.done = true; Sound.play('ok');
+      this.complete({ solved:true, firstTry:s.attempts === 0, hints:s.hintLevel, attempts:s.attempts });
+      return;
+    }
+    s.attempts++; Stats.wrongAttempt(); Sound.play('oops');
+    if (u.input) { u.input.classList.remove('try'); void u.input.offsetWidth; u.input.classList.add('try'); u.input.select && u.input.select(); }
+    let msg = s.attempts === 1 ? pick(PHRASES.try1) : pick(PHRASES.try2);
+    if (t.kind === 'number' && typeof val === 'number') {
+      const d = val - t.answer;
+      if (t.type === 'arith' && t.op === '+' && M.crosses(t.a,'+',t.b) && d === -10) msg = 'Почти! Не забудь: из лишних единиц получился новый десяток.';
+      else if (t.type === 'arith' && t.op === '-' && M.crosses(t.a,'-',t.b) && d === 10) msg = 'Почти! Когда единиц не хватает, приходится разменять один десяток.';
+      else if (Math.abs(d) === 10) msg = 'Ты уже близко! Посмотри внимательно на десятки.';
+      else if (Math.abs(d) <= 2) msg = 'Совсем рядом! Пересчитай единицы.';
+    }
+    if (t.kind === 'order') { let k = 0; while (k < val.length && val[k] === k) k++; msg = k > 0 ? `Первые ${k} ${plural(k,'шаг стоит','шага стоят','шагов стоят')} на месте! Подумай, что идёт дальше.` : 'Подумай, что нужно сделать самым первым.'; s.orderSeq = s.orderSeq.slice(0, k); this.redrawOrder && this.redrawOrder(); }
+    u.fox.say(msg, 'think');
+    clear(u.feedback);
+    const fb = el('div', { class:'fb try' }, el('div', { class:'t' }, '🤔 Давай проверим ещё раз'), el('div', null, msg + ' Попробуй ещё раз — награды никуда не денутся.'));
+    if (s.attempts >= 3) fb.appendChild(el('div', { class:'btn-row' }, el('button', { class:'btn btn-soft btn-sm', type:'button', onclick:onTap(() => this.reveal()) }, '👀 Покажи ответ и объясни')));
+    u.feedback.appendChild(fb);
+    if (s.attempts >= 2 && s.hintLevel < 4) this.setHint(4);
+    else if (s.attempts === 1 && s.hintLevel === 0 && t.type !== 'error') this.setHint(1);
+    if (u.input) setTimeout(() => { try { u.input.focus({ preventScroll:true }); } catch(e){} }, 30);
+  },
+  hint(){
+    const s = this.s; if (!s || s.done) return;
+    if (s.hintLevel >= 4) { this.openTool('steps', { guided:false, force:true }); return; }
+    this.setHint(s.hintLevel + 1);
+    Sound.play('hint');
+  },
+  setHint(level){
+    const s = this.s, t = s.task, u = this.ui;
+    const prev = s.hintLevel;
+    for (let l = prev + 1; l <= level; l++) Stats.hintUsed(l === 4);
+    s.hintLevel = Math.max(prev, level);
+    const L = s.hintLevel;
+    const titles = ['', 'Наводящий вопрос', 'Выбираем способ', 'Разбиваем на части', 'Решаем по шагам'];
+    const text = L < 4 ? t.hints[L-1] : 'Давай пройдём решение шаг за шагом. Нажимай «Следующий шаг», а потом впиши ответ сам.';
+    clear(u.hintBox);
+    const dots = el('span', { class:'hint-dots', 'aria-hidden':'true' }); for (let i = 1; i <= 4; i++) dots.appendChild(el('i', { class: i <= L ? 'on' : '' }));
+    u.hintBox.appendChild(el('div', { class:'hint-box' }, el('div', { class:'hl' }, dots, `Подсказка ${L} из 4 · ${titles[L]}`), text));
+    u.hintBtn.textContent = L < 3 ? '💡 Ещё подсказка' : L === 3 ? '🪜 Показать шаги' : '🪜 Открыть шаги';
+    if (L >= 2 && t.view.family && !t.view.showFamily && !u.visual.querySelector('.family')) {
+      u.visual.insertBefore(el('div', { class:'family', html:familySVG(t.view.family) }), u.visual.firstChild);
+    }
+    u.fox.say(pick(PHRASES.hint) + ' ' + (L < 4 ? text : 'Смотри, я разложил всё по шагам.'), 'think');
+    if (L === 4) this.openTool('steps', { guided:false, force:true });
+  },
+  openTool(name, opts){
+    opts = opts || {};
+    const s = this.s, u = this.ui; if (!s) return;
+    if (s.tool === name && !opts.force) { this.closeTool(); return; }
+    s.tool = name; clear(u.toolPanel); u.toolPanel.hidden = false;
+    Object.keys(u.toolBtns).forEach(k => u.toolBtns[k].setAttribute('aria-pressed', String(k === name)));
+    const t = s.task, startN = t.a != null ? t.a : (t.num != null ? t.num : (t.line ? t.line.start : 0));
+    if (name === 'line') NumberLineTool(u.toolPanel, t);
+    else if (name === 'tens') TensTool(u.toolPanel, startN);
+    else if (name === 'hundred') HundredTool(u.toolPanel, startN);
+    else {
+      const guided = opts.guided != null ? opts.guided && !s.done : (!s.done && s.hintLevel < 4);
+      StepViewer(u.toolPanel, t.strategies, { guided, title: guided ? '🧩 Собери решение по шагам' : '🪜 Пошаговое решение', onHide:() => this.closeTool() });
+    }
+    if (opts.scroll !== false && name === 'steps' && u.toolPanel.scrollIntoView) setTimeout(() => { try { u.toolPanel.scrollIntoView({ behavior:'smooth', block:'nearest' }); } catch(e){} }, 50);
+  },
+  closeTool(){ const s = this.s, u = this.ui; if (!s) return; s.tool = null; u.toolPanel.hidden = true; clear(u.toolPanel); Object.keys(u.toolBtns).forEach(k => u.toolBtns[k].setAttribute('aria-pressed','false')); },
+  lockInputs(){
+    const u = this.ui;
+    if (u.input) { u.input.disabled = true; }
+    u.card.querySelectorAll('.keypad button:not(.k-ok), .num-card, .choice, .sol-line.pick, .order-item').forEach(b => { b.disabled = true; });
+    if (u.checkBtn) u.checkBtn.disabled = true;
+    if (u.hintBtn) u.hintBtn.disabled = true;
+  },
+  complete(res){
+    const s = this.s, t = s.task, u = this.ui;
+    const r = Stats.complete(t, res);
+    s.results.push({ solved:res.solved, firstTry:res.firstTry, hints:res.hints, key:t.key });
+    s.crystals += r.gained;
+    if (KEY_INFO[t.key]) s.skills.add(KEY_INFO[t.key].label);
+    if (r.learned) s.learned.push(r.learned);
+    r.badges.forEach(b => s.newBadges.push(b));
+    this.lockInputs();
+    if (u.input && res.solved) u.input.classList.add('ok');
+    updateTop();
+    clear(u.feedback);
+    const btnRow = el('div', { class:'btn-row' });
+    const nextBtn = el('button', { class:'btn btn-primary', type:'button', onclick:onTap(() => this.next()) }, this.isLast() ? '🏁 К итогам' : 'Дальше ➜');
+    btnRow.appendChild(nextBtn);
+    const offerSimilar = t.remake && (res.hints >= 3 || res.attempts >= 2 || !res.solved);
+    if (offerSimilar) btnRow.appendChild(el('button', { class:'btn btn-sun', type:'button', onclick:onTap(() => { s.similar = t.remake; if (s.total !== Infinity && s.index >= s.total) s.total++; this.next(); }) }, '🔁 Похожее задание'));
+    if (res.solved) {
+      let say = res.firstTry && !res.hints ? pick(PHRASES.ok) : (!res.firstTry ? pick(PHRASES.okAfter) : pick(PHRASES.okHint));
+      const fb = el('div', { class:'fb ok' }, el('div', { class:'t' }, '✨ Верно!', r.gained ? el('span', { class:'gain' }, '💎 +' + r.gained) : null), el('div', null, say));
+      if (res.firstTry && !res.hints) fb.appendChild(el('div', { class:'extra' }, 'Ты решил сам, без подсказок — за самостоятельность двойная награда!'));
+      if (t.type === 'arith' && t.op === '-' && chance(.35) && t.b > 0) fb.appendChild(el('div', { class:'extra' }, `🔎 Проверка следопыта: ${t.answer} + ${t.b} = ${t.a} ✓`));
+      if (t.strategies.length > 1 && (res.hints > 0 || chance(.4))) btnRow.appendChild(el('button', { class:'btn btn-lav', type:'button', onclick:onTap(() => this.openTool('steps', { guided:false, force:true })) }, '🔀 Другой способ'));
+      else if (res.hints === 0 && t.strategies.length === 1 && t.kind !== 'number') btnRow.appendChild(el('button', { class:'btn btn-soft', type:'button', onclick:onTap(() => this.openTool('steps', { guided:false, force:true })) }, '🪜 Как это решается'));
+      fb.appendChild(btnRow);
+      u.feedback.appendChild(fb);
+      u.fox.say(say, 'happy');
+      Fx.gems(fb, r.gained);
+      if (s.dragon) { s.dragon.power = Math.max(0, s.dragon.power - 1); Sound.play('hit'); if (u.dragon) { u.dragon.classList.remove('hit'); void u.dragon.offsetWidth; u.dragon.classList.add('hit'); } if (s.dragon.power === 0) { nextBtn.textContent = '🏆 Победа! К итогам'; u.fox.say('Дракон растерял всю волшебную силу! Ты победил!', 'happy'); } }
+    } else {
+      const fb = el('div', { class:'fb shown' }, el('div', { class:'t' }, '📖 Разберёмся вместе'),
+        el('div', null, t.kind === 'number' ? `Правильный ответ: ${t.answer}. Посмотри шаги решения, а потом попробуй похожее задание сам!` : 'Правильный вариант отмечен. Посмотри шаги решения — и попробуй похожее задание!'), btnRow);
+      u.feedback.appendChild(fb);
+      u.fox.say('Ничего страшного! Самое важное — понять, как это работает. Попробуем похожее?', 'think');
+    }
+    if (r.change === 'up') { Sound.play('level'); Toast.show(LEVELS[App.data.settings.level].icon, 'Новый уровень: ' + LEVELS[App.data.settings.level].name, 'Ты так уверенно считаешь — попробуем задания интереснее!'); }
+    if (r.change === 'down') Toast.show('🌱', 'Немного потренируемся на примерах попроще', 'Так мы станем ещё сильнее. Не забывай про подсказки!');
+    this.updateHead();
+    setTimeout(() => { if (this.s === s && s.done) try { nextBtn.focus({ preventScroll:true }); } catch(e){} }, 80);
+  },
+  reveal(){
+    const s = this.s; if (!s || s.done) return;
+    const t = s.task, u = this.ui;
+    s.done = true;
+    if (t.kind === 'number' && u.input) u.input.value = String(t.answer);
+    if (t.kind === 'choice' && u.choiceBtns[t.answer]) u.choiceBtns[t.answer].classList.add('right');
+    if (t.kind === 'order') { s.orderSeq = t.items.map((_,k)=>k); this.redrawOrder && this.redrawOrder(); }
+    this.complete({ solved:false, firstTry:false, hints:s.hintLevel, attempts:s.attempts });
+    this.openTool('steps', { guided:false, force:true });
+  },
+  isLast(){ const s = this.s; return s.total !== Infinity && s.index >= s.total; },
+  finish(){
+    const s = this.s; if (!s) return;
+    if (s.timer) clearInterval(s.timer);
+    const d = App.data;
+    d.stats.byMode[s.mode] = (d.stats.byMode[s.mode] || 0) + 1;
+    let dragonWin = false;
+    if (s.dragon && s.dragon.power <= 0) { dragonWin = true; d.stats.dragonWins++; Badges.check().forEach(b => s.newBadges.push(b)); }
+    save();
+    const sum = { mode:s.mode, opts:s.opts, def:s.def, results:s.results, crystals:s.crystals, skills:Array.from(s.skills), badges:s.newBadges, learned:s.learned, dragon:s.dragon, dragonWin, timed:!!s.opts.timed };
+    this.stop();
+    showResults(sum);
+  }
+};
+
+/* =====================================================================
+   13. ИТОГИ, ПРОГРЕСС, БИБЛИОТЕКА, ИГРА В ПАРЫ
+   ===================================================================== */
+function showResults(sum){
+  UI.show('results'); updateTop();
+  const root = clear($('#scr-results'));
+  const n = sum.results.length, ok = sum.results.filter(r => r.solved).length, self = sum.results.filter(r => r.solved && r.firstTry && !r.hints).length, persist = sum.results.filter(r => r.solved && !r.firstTry).length;
+  const fx = makeFox('lg');
+  let title, big;
+  if (sum.mode === 'dragon') { title = sum.dragonWin ? 'Победа над драконом!' : 'Дракон устал и улетел отдыхать'; big = sum.dragonWin ? '🏆' : '🌙'; }
+  else if (sum.timed) { title = 'Испытание завершено!'; big = '⏱️'; }
+  else { title = 'Серия пройдена!'; big = n && ok === n ? '🌟' : '🎉'; }
+  const box = el('div', { class:'card results' }, el('div', { class:'big', 'aria-hidden':'true' }, big), el('h2', null, title));
+  if (sum.mode === 'dragon' && !sum.dragonWin) box.appendChild(el('p', { class:'explain' }, 'Ты стал сильнее с каждым заданием. Дракон обещал вернуться на новую битву!'));
+  box.appendChild(el('div', { class:'res-grid' },
+    metric('m1', ok + (n ? ' из ' + n : ''), 'Решено заданий'),
+    metric('m2', self, 'Сам, без подсказок'),
+    metric('m3', persist, 'Нашёл ответ после ошибки'),
+    metric('m5', '💎 ' + sum.crystals, 'Кристаллов собрано')));
+  if (sum.dragonWin) {
+    const b = BADGES.find(x => x.id === 'dragon');
+    box.appendChild(el('div', { class:'badge-big' }, el('span', { class:'bi' }, '🐉'), el('b', null, 'Коллекционный значок'), el('span', null, b.name)));
+  }
+  if (sum.skills.length) box.appendChild(el('div', null, el('h3', { style:'margin:18px 0 10px' }, '🧠 Что ты потренировал'), el('div', { class:'tag-list' }, sum.skills.map(x => el('span', { class:'tag' }, x)))));
+  if (sum.learned.length) box.appendChild(el('div', null, el('h3', { style:'margin:18px 0 10px' }, '📘 Новые освоенные приёмы'), el('div', { class:'tag-list' }, sum.learned.map(t => el('span', { class:'tag', style:'background:var(--lav-l)' }, TECHS[t].icon + ' ' + TECHS[t].name)))));
+  if (sum.badges.length) box.appendChild(el('div', null, el('h3', { style:'margin:18px 0 10px' }, '🏅 Новые значки'), el('div', { class:'tag-list' }, sum.badges.map(b => el('span', { class:'tag', style:'background:var(--sun-l)' }, b.icon + ' ' + b.name)))));
+  box.appendChild(el('div', { class:'fox-wrap', style:'justify-content:center;margin-top:18px' }, fx.fox, fx.bubble));
+  const helped = sum.results.filter(r => r.hints > 0 || !r.firstTry).length;
+  fx.say(persist ? 'Ты не сдавался, когда было трудно, — вот что делает настоящих волшебников!' : (helped ? 'Подсказки помогли тебе узнать новые способы считать. Отличная работа!' : 'Ты решал сам и уверенно. Я горжусь тобой!'), 'happy');
+  box.appendChild(el('div', { class:'btn-row', style:'justify-content:center;margin-top:20px' },
+    el('button', { class:'btn btn-primary btn-lg', type:'button', onclick:onTap(() => Game.start(sum.mode, sum.opts)) }, '🔁 Ещё раз'),
+    el('button', { class:'btn btn-soft btn-lg', type:'button', onclick:onTap(goHome) }, '🏠 На главную')));
+  root.appendChild(box);
+  if (sum.dragonWin || (n && ok === n)) { Fx.confetti(); Sound.play('win'); }
+}
+
+function renderProgress(){
+  const d = App.data, st = d.stats, root = clear($('#scr-progress'));
+  root.appendChild(el('div', { class:'game-head' }, el('button', { class:'btn btn-soft btn-sm', type:'button', onclick:onTap(goHome) }, '🏠 На главную'), el('h2', { style:'flex:1' }, '📊 Мой прогресс')));
+  const acc = Stats.accuracy();
+  root.appendChild(el('div', { class:'card' }, el('div', { class:'metrics' },
+    metric('m1', st.solved, 'Решено заданий'), metric('m2', st.bestStreak, 'Лучшая серия'), metric('m3', acc == null ? '—' : acc + '%', 'Точность с первой попытки'),
+    metric('m4', `${d.learned.length}/9`, 'Освоено приёмов'), metric('m5', '💎 ' + st.crystals, 'Кристаллы'), metric('m1', st.hints, 'Подсказок изучено'))));
+  const rec = recommendation();
+  const strong = Stats.strengths(), weak = Stats.troubles();
+  const g = el('div', { class:'prog-grid' });
+  g.appendChild(el('div', { class:'card' }, el('h3', null, '🌟 Что уже хорошо получается'),
+    el('div', { class:'list' }, strong.length ? strong.slice(0,6).map(e => el('div', null, el('div', { class:'li' }, KEY_INFO[e.key].label, el('span', null, Math.round(e.ratio*100) + '%')), el('div', { class:'bar' }, el('i', { style:`width:${Math.round(e.ratio*100)}%` }))))
+      : el('div', { class:'muted' }, 'Реши ещё несколько заданий — и здесь появятся твои сильные стороны.'))));
+  g.appendChild(el('div', { class:'card' }, el('h3', null, '🎯 Что стоит потренировать'),
+    el('div', { class:'list' }, weak.length ? weak.slice(0,6).map(e => el('div', { class:'li' }, el('span', null, KEY_INFO[e.key].label), el('button', { class:'btn btn-sun btn-sm', type:'button', onclick:onTap(() => startTrain(KEY_INFO[e.key].train)) }, 'Тренировать')))
+      : el('div', { class:'muted' }, 'Пока всё идёт отлично! Пробуй новые миры и приёмы.'))));
+  const recent = d.learnedLog.slice(0,5);
+  g.appendChild(el('div', { class:'card' }, el('h3', null, '📘 Недавно освоенные приёмы'),
+    el('div', { class:'list' }, recent.length ? recent.map(x => el('div', { class:'li' }, TECHS[x.t].icon + ' ' + TECHS[x.t].name, el('span', { class:'muted' }, new Date(x.at).toLocaleDateString('ru-RU'))))
+      : el('div', { class:'muted' }, 'Открой «Книгу приёмов» и попробуй любой приём — после трёх удачных решений он засчитается.'))));
+  g.appendChild(el('div', { class:'card' }, el('h3', null, '🧭 Совет Искрика'), el('p', { class:'explain' }, rec.text),
+    el('button', { class:'btn btn-primary', type:'button', onclick:onTap(() => startTrain(rec.train)) }, 'Начать тренировку')));
+  root.appendChild(g);
+  const bd = el('div', { class:'badges' });
+  BADGES.forEach(b => { const got = d.badges.indexOf(b.id) >= 0; bd.appendChild(el('div', { class:'badge ' + (got ? 'got' : 'locked') }, el('div', { class:'bi' }, b.icon), el('b', null, b.name), el('span', null, b.desc))); });
+  root.appendChild(el('div', { class:'card', style:'margin-top:16px' }, el('h3', null, `🏅 Значки (${d.badges.length} из ${BADGES.length})`), bd));
+  root.appendChild(el('div', { class:'btn-row', style:'justify-content:center;margin-top:20px' }, el('button', { class:'btn btn-ghost', type:'button', onclick:confirmReset }, '🗑️ Сбросить прогресс')));
+}
+
+function renderLibrary(){
+  const d = App.data, root = clear($('#scr-library'));
+  root.appendChild(el('div', { class:'game-head' }, el('button', { class:'btn btn-soft btn-sm', type:'button', onclick:onTap(goHome) }, '🏠 На главную'), el('h2', { style:'flex:1' }, '📚 Книга приёмов устного счёта')));
+  const fx = makeFox('sm');
+  root.appendChild(el('div', { class:'fox-wrap', style:'margin-bottom:16px' }, fx.fox, fx.bubble));
+  fx.say('Здесь живут секреты быстрого счёта. Каждый приём — это не фокус, а умная идея. Открой любой!');
+  const grid = el('div', { class:'tech-grid' });
+  TECH_ORDER.forEach(k => {
+    const t = TECHS[k], learned = d.learned.indexOf(k) >= 0, sc = d.tech[k] ? d.tech[k].score : 0;
+    grid.appendChild(el('button', { class:'tech-card', type:'button', onclick:onTap(() => openTech(k)) },
+      el('span', { class:'st' + (learned ? ' ok' : '') }, learned ? '✔ освоен' : (sc > 0 ? 'изучаю' : 'новый')),
+      el('span', { class:'ti' }, t.icon), el('b', null, t.name), el('span', { class:'mn' }, '«' + t.mn + '»')));
+  });
+  root.appendChild(grid);
+}
+function techVisual(k){
+  const box = el('div', { class:'metaphor' });
+  if (k === 'A') { box.appendChild(el('div', { html:numberLineSVG({ lo:35, hi:45, island:40, jumps:[{from:38,to:40,label:'+2'},{from:40,to:43,label:'+3'}] }) }).firstChild); box.appendChild(el('div', { class:'vis-cap' }, 'Лисёнок прыгает на островок 40 по маленькому мостику, а потом дальше.')); }
+  else if (k === 'B') { box.appendChild(el('div', { class:'vis-row' }, el('div', null, blocksOf(34), el('div', { class:'vis-cap' }, '34')), el('div', { class:'vis-op' }, '+'), el('div', null, el('div', { class:'blocks' }, rods(2,'lav')), el('div', { class:'vis-cap' }, '20')), el('div', { class:'vis-op' }, '+'), el('div', null, cubes(2,'coral'), el('div', { class:'vis-cap' }, '2')))); box.appendChild(el('div', { class:'vis-cap' }, '22 разрезали: 2 десятка и 2 единицы.')); }
+  else if (k === 'C') { box.appendChild(el('div', { html:numberLineSVG({ lo:40, hi:70, jumps:[{from:42,to:62,label:'+20'},{from:62,to:65,label:'+3'}] }) }).firstChild); box.appendChild(el('div', { class:'vis-cap' }, 'Большой прыжок — десятки, маленький — единицы.')); }
+  else if (k === 'D') {
+    let a = 3; const fr = el('div'), cap = el('div', { class:'vis-cap', style:'font-size:18px' });
+    const draw = () => { clear(fr); fr.appendChild(tenFrame(a, 10-a)); cap.textContent = `${a} и ${10-a} — друзья: ${a} + ${10-a} = 10`; };
+    draw();
+    box.appendChild(fr); box.appendChild(cap);
+    box.appendChild(el('div', { class:'mini-row' }, [1,2,3,4,5].map(n => el('button', { class:'mini', type:'button', onclick:() => { a = n; draw(); Sound.play('tap'); } }, `${n} и ${10-n}`))));
+  }
+  else if (k === 'E') { const g = el('div', { class:'hgrid' }); for (let i = 1; i <= 100; i++) g.appendChild(el('i', { class: i <= 63 ? 'f' : i <= 70 ? 'n' : 'r' }, i%10===0 ? String(i) : '')); box.appendChild(g); box.appendChild(el('div', { class:'legend' }, el('span', { style:'--c:#22b8a9' }, '63'), el('span', { style:'--c:#ffc23d' }, 'ещё 7 до 70'), el('span', { style:'--c:#efe9ff' }, 'ещё 30 до 100'))); }
+  else if (k === 'F') { box.appendChild(el('div', { class:'family', html:familySVG({ whole:60, parts:[42,18], unknown:null }) })); box.appendChild(el('div', { class:'tag-list' }, ['42 + 18 = 60','18 + 42 = 60','60 − 18 = 42','60 − 42 = 18'].map(x => el('span', { class:'tag' }, x)))); }
+  else if (k === 'G') { box.appendChild(el('div', { class:'vis-row' }, el('div', { class:'big-num' }, '39 + 16'), el('div', { class:'vis-op' }, '→'), el('div', { class:'big-num', style:'color:var(--teal-d)' }, '40 + 15'))); box.appendChild(el('div', { class:'vis-cap' }, '⚖️ Одному дали 1, у другого забрали 1 — весы в равновесии, сумма та же.')); }
+  else if (k === 'H') { box.appendChild(el('div', { class:'big-num' }, '74 − 28 = 46')); box.appendChild(el('div', { class:'big-num', style:'font-size:30px;color:var(--teal-d)' }, '🔎 46 + 28 = 74 ✓')); box.appendChild(el('div', { class:'vis-cap' }, 'Вернули 28 обратно — и снова пришли к 74. Значит, всё верно!')); }
+  else if (k === 'I') { box.appendChild(el('div', { class:'vis-row' }, el('div', { class:'big-num' }, '24 + 25'), el('div', { class:'vis-op' }, '='), el('div', { class:'big-num', style:'color:var(--lav-d)' }, '24 + 24 + 1'))); box.appendChild(el('div', { class:'vis-cap' }, '👯 Два близнеца по 24 и ещё один кубик.')); }
+  return box;
+}
+function techExampleStrategies(k){
+  const t = TECHS[k];
+  if (k === 'F') return [strat('fam','F','Семья 42, 18 и 60',[info('Целое — 60, части — 42 и 18.'), plain(42,'+',18,'Соединяем части — получаем целое.'), plain(60,'-',18,'Убираем одну часть — остаётся другая.'), plain(60,'-',42,'И наоборот!')],{q:'',strat:'',split:''})];
+  if (k === 'H') return [strat('chk','H','Проверка 74 − 28 = 46',[info('Вычитание проверяем сложением.'), plain(46,'+',28,'Вернули то, что отняли.'), info('Получилось 74 — как в начале. Значит, 74 − 28 = 46 верно!')],{q:'',strat:'',split:''})];
+  const list = [];
+  [t.ex, t.ex2].forEach(ex => { if (!ex) return; const s = Solver.prefer(Solver.strategies(ex[0],ex[1],ex[2]), k)[0]; list.push(Object.assign({}, s, { name: M.expr(ex[0],ex[1],ex[2]) })); });
+  return list;
+}
+function openTech(k){
+  const d = App.data, t = TECHS[k];
+  if (d.seenTech.indexOf(k) < 0) { d.seenTech.push(k); save(); }
+  UI.show('tech');
+  const root = clear($('#scr-tech'));
+  root.appendChild(el('div', { class:'game-head' },
+    el('button', { class:'btn btn-soft btn-sm', type:'button', onclick:onTap(() => { UI.show('library'); renderLibrary(); }) }, '◀ Книга приёмов'),
+    el('div', { class:'game-title' }, el('span', { class:'gt-icon' }, t.icon), el('div', null, el('div', { class:'gt-world' }, 'Приём ' + (TECH_ORDER.indexOf(k)+1) + ' из 9'), el('div', { class:'gt-name' }, t.name)))));
+  const left = el('div', { class:'card' },
+    el('div', { class:'mnemo' }, '✨ «' + t.mn + '»'),
+    el('p', { class:'explain' }, t.explain),
+    techVisual(k),
+    el('div', { class:'why' }, '🤔 Почему это работает? ' + t.why),
+    t.when ? el('div', { class:'when' }, '🧭 Когда удобно? ' + t.when) : null,
+    el('div', { class:'btn-row', style:'margin-top:16px' },
+      el('button', { class:'btn btn-primary', type:'button', onclick:onTap(() => Game.start('tech', { tech:k, title:'Приём: ' + t.name })) }, '🚀 Попробовать самому'),
+      k === 'D' ? el('button', { class:'btn btn-sun', type:'button', onclick:onTap(() => { UI.show('pairs'); Pairs.start(10); }) }, '🤝 Игра в пары') : null));
+  const right = el('div', null);
+  const ex = el('div', { class:'card' });
+  StepViewer(ex, techExampleStrategies(k), { title:'🪜 Пример по шагам' });
+  right.appendChild(ex);
+  const mt = el('div', { class:'card mini-task', style:'margin-top:16px' });
+  miniTask(mt, k);
+  right.appendChild(mt);
+  root.appendChild(el('div', { class:'tech-detail' }, left, right));
+}
+/* Одно небольшое тренировочное задание на странице приёма */
+function miniTask(root, k){
+  clear(root);
+  const lvl = App.data.settings.level;
+  let task = null;
+  for (let i = 0; i < 6 && (!task || task.kind !== 'number'); i++) task = TECH_MAKERS[k](lvl);
+  if (!task || task.kind !== 'number') { const p = Gen.pair('+', 2, { cross:true, bKind:'one' }); task = Tasks.arith(p[0],'+',p[1],{ tech:'A' }); }
+  let attempts = 0, hints = 0, done = false;
+  const inp = el('input', { type:'text', inputmode: COARSE ? 'numeric' : 'numeric', maxlength:'3', autocomplete:'off', 'aria-label':'Ответ' });
+  inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g,'').slice(0,3); if (+inp.value > 100) inp.value = inp.value.slice(0,2); });
+  const fb = el('div', { 'aria-live':'polite', style:'margin-top:10px;font-weight:700' });
+  const exprRow = el('div', { class:'mt-expr' });
+  task.view.expr.forEach(p => exprRow.appendChild(p === SLOT ? inp : el('span', null, String(p))));
+  const check = () => {
+    if (done) return;
+    if (inp.value === '') { fb.textContent = 'Сначала впиши ответ 🙂'; return; }
+    if (+inp.value === task.answer) {
+      done = true; Sound.play('ok');
+      const r = Stats.complete(task, { solved:true, firstTry:attempts === 0, hints, attempts }); updateTop();
+      clear(fb); fb.appendChild(el('div', { class:'fb ok' }, el('div', { class:'t' }, '✨ Верно!', el('span', { class:'gain' }, '💎 +' + r.gained)), 'Отлично! Хочешь ещё одно?',
+        el('div', { class:'btn-row' }, el('button', { class:'btn btn-primary btn-sm', type:'button', onclick:onTap(() => miniTask(root, k)) }, 'Ещё задание'))));
+      inp.disabled = true;
+    } else {
+      attempts++; Stats.wrongAttempt(); Sound.play('oops');
+      fb.textContent = attempts === 1 ? 'Почти! Попробуй ещё раз. ' + task.hints[1] : 'Подсказка: ' + task.hints[2];
+      if (attempts >= 2) hints = Math.max(hints, 3);
+      inp.focus(); inp.select();
+    }
+  };
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); check(); } });
+  root.appendChild(el('h3', null, '✏️ Мини-задание'));
+  root.appendChild(el('div', { class:'muted', style:'font-weight:700' }, task.view.ask));
+  root.appendChild(exprRow);
+  root.appendChild(el('div', { class:'btn-row', style:'justify-content:center' },
+    el('button', { class:'btn btn-primary btn-sm', type:'button', onclick:onTap(check) }, '✔ Проверить'),
+    el('button', { class:'btn btn-sun btn-sm', type:'button', onclick:onTap(() => { if (done) return; hints = Math.min(3, hints+1); Stats.hintUsed(false); fb.textContent = '💡 ' + task.hints[hints-1]; }) }, '💡 Подсказка')));
+  root.appendChild(fb);
+}
+
+/* Мини-игра «Дружба до десяти / до ста» */
+const Pairs = {
+  start(target){
+    const root = clear($('#scr-pairs'));
+    const lvl = App.data.settings.level;
+    const st = { target, sel:null, found:0, moves:0 };
+    let nums = [];
+    const used = new Set();
+    while (nums.length < 10) {
+      let a;
+      if (target === 10) a = rnd(1,5);
+      else a = lvl >= 3 ? rnd(11,49) : rnd(1,5)*10;
+      if (target === 100 && a%10 === 0 && lvl >= 3) a++;
+      const key = Math.min(a, target - a);
+      if (used.has(key) && used.size < (target === 10 ? 5 : 30)) continue;
+      used.add(key); nums.push(a, target - a);
+    }
+    nums = shuffle(nums);
+    const fx = makeFox('sm');
+    const board = el('div', { class:'pairs-board', role:'group', 'aria-label':'Карточки с числами' });
+    const info2 = el('div', { class:'tool-note', style:'text-align:center' }, 'Найдено пар: 0 из 5');
+    const cards = nums.map((v,i) => {
+      const b = el('button', { class:'pcard', type:'button', 'aria-label':'Число ' + v, onclick:() => tap(i) }, String(v));
+      board.appendChild(b); return b;
+    });
+    const tap = i => {
+      const b = cards[i]; if (b.classList.contains('done')) return;
+      Sound.play('tap');
+      if (st.sel === null) { st.sel = i; b.classList.add('sel'); return; }
+      if (st.sel === i) { b.classList.remove('sel'); st.sel = null; return; }
+      const j = st.sel, a = nums[i], c = nums[j]; st.moves++;
+      cards[j].classList.remove('sel'); st.sel = null;
+      if (a + c === target) {
+        b.classList.add('done'); cards[j].classList.add('done'); b.disabled = true; cards[j].disabled = true;
+        st.found++; Sound.play('ok'); fx.say(`${c} и ${a} — друзья! Вместе ${target}.`, 'happy');
+        info2.textContent = `Найдено пар: ${st.found} из 5`;
+        if (st.found === 5) win();
+      } else {
+        [b, cards[j]].forEach(x => { x.classList.remove('no'); void x.offsetWidth; x.classList.add('no'); });
+        Sound.play('oops'); fx.say(`${c} + ${a} = ${a+c}. А нам нужно ${target}. ${a+c < target ? 'Маловато' : 'Многовато'} — поищем другого друга!`, 'think');
+      }
+    };
+    const win = () => {
+      const d = App.data; d.stats.pairsGames++; d.stats.crystals += 3; Stats.techCredit('D', 1); Badges.check(); save(); updateTop();
+      Sound.play('win'); Fx.confetti();
+      fx.say(`Все пары найдены за ${st.moves} ${plural(st.moves,'ход','хода','ходов')}! Держи 3 кристалла.`, 'happy');
+      board.after(el('div', { class:'btn-row', style:'justify-content:center' },
+        el('button', { class:'btn btn-primary', type:'button', onclick:onTap(() => Pairs.start(target)) }, '🔁 Ещё раз'),
+        el('button', { class:'btn btn-lav', type:'button', onclick:onTap(() => Pairs.start(target === 10 ? 100 : 10)) }, target === 10 ? '💯 Пары до 100' : '🔟 Пары до 10'),
+        el('button', { class:'btn btn-soft', type:'button', onclick:onTap(() => openTech('D')) }, '📘 К приёму')));
+    };
+    root.appendChild(el('div', { class:'game-head' }, el('button', { class:'btn btn-soft btn-sm', type:'button', onclick:onTap(goHome) }, '🏠 На главную'),
+      el('div', { class:'game-title' }, el('span', { class:'gt-icon' }, '🤝'), el('div', null, el('div', { class:'gt-world' }, 'Мини-игра'), el('div', { class:'gt-name' }, target === 10 ? 'Дружба до десяти' : 'Дружба до ста')))));
+    root.appendChild(el('div', { class:'card' }, el('div', { class:'fox-wrap' }, fx.fox, fx.bubble), board, info2));
+    fx.say(`Найди пары чисел, которые вместе дают ${target}. Нажми на два числа-друга!`);
+  }
+};
+
+/* =====================================================================
+   14. ИНИЦИАЛИЗАЦИЯ
+   ===================================================================== */
+function onGlobalKey(e){
+  if (UI.current !== 'game' || !Game.s || Modal.isOpen()) return;
+  const s = Game.s, t = s.task; if (!t) return;
+  const tag = (e.target && e.target.tagName) || '';
+  if (tag === 'SELECT' || (tag === 'INPUT' && e.target !== Game.ui.input)) return;
+  if (e.key === 'Enter') {
+    if (tag === 'BUTTON' || tag === 'INPUT') return;
+    if (s.done) { e.preventDefault(); Game.next(); }
+    else if (t.kind !== 'choice') { e.preventDefault(); Game.submit(); }
+    return;
+  }
+  if (tag === 'INPUT') return;
+  if (!s.done && t.kind === 'number' && /^\d$/.test(e.key)) { e.preventDefault(); Game.key(e.key); if (Game.ui.input) Game.ui.input.focus(); return; }
+  if (!s.done && t.kind === 'number' && e.key === 'Backspace') { e.preventDefault(); Game.key('⌫'); return; }
+  if (!s.done && t.kind === 'choice' && /^[1-9]$/.test(e.key)) { const i = +e.key - 1; const b = Game.ui.choiceBtns[i]; if (b && !b.disabled) { e.preventDefault(); Game.choose(i, b); } }
+}
+function init(){
+  Store.init();
+  App.data = Store.load();
+  save();
+  $('#btnHome').addEventListener('click', onTap(goHome));
+  $('#btnSound').addEventListener('click', onTap(() => { toggleSound(); if (UI.current === 'home') renderHome(); }, 250));
+  document.addEventListener('keydown', onGlobalKey);
+  updateTop();
+  goHome();
+}
+
+/* Доступ для автоматических проверок логики */
+window.Matemagia = { M, Solver, Gen, Tasks, MODES, TECH_MAKERS, TECHS, Game, Stats, Store, App, numOptions, keyOf, defaultData };
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
+</body>
+</html>
